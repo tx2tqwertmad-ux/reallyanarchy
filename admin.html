@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Админ-панель — REALLYANARCHY</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="nav-root"></div>
+
+<main>
+  <section>
+    <div class="wrap admin-shell">
+      <aside class="admin-side">
+        <button class="active" data-tab="overview">Обзор</button>
+        <button data-tab="news">Новости</button>
+        <button data-tab="appeals">Апелляции</button>
+        <button data-tab="players">Игроки</button>
+        <button data-tab="mods">Моды</button>
+      </aside>
+
+      <div class="admin-panel">
+
+        <div class="tab-panel active" id="panel-overview">
+          <h2>Обзор</h2>
+          <div class="stats-row">
+            <div class="card stat"><span class="num" id="statUsers">0</span><span class="lbl">Игроков зарегистрировано</span></div>
+            <div class="card stat"><span class="num" id="statPending">0</span><span class="lbl">Апелляций в ожидании</span></div>
+            <div class="card stat"><span class="num" id="statNews">0</span><span class="lbl">Новостей опубликовано</span></div>
+            <div class="card stat"><span class="num" id="statMods">0</span><span class="lbl">Модов в чёрном списке</span></div>
+          </div>
+          <p class="dim" style="max-width:600px;">Ты вошёл как <b id="whoAmI" style="color:var(--text)"></b>. Все данные хранятся локально в этом браузере — подробности в README проекта.</p>
+        </div>
+
+        <div class="tab-panel" id="panel-news">
+          <h2>Новости</h2>
+          <form class="panel" id="newsForm" style="margin-bottom:24px;">
+            <div class="field"><label for="newsTitle">Заголовок</label><input id="newsTitle" required maxlength="80"></div>
+            <div class="field"><label for="newsText">Текст</label><textarea id="newsText" required maxlength="600"></textarea></div>
+            <button class="btn primary" type="submit">Опубликовать</button>
+          </form>
+          <div id="newsAdminList"></div>
+        </div>
+
+        <div class="tab-panel" id="panel-appeals">
+          <h2>Апелляции</h2>
+          <table id="appealsTable">
+            <thead><tr><th>Ник</th><th>Причина бана</th><th>Сообщение</th><th>Статус</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <div class="empty" id="appealsEmpty" style="display:none; margin-top:12px;">Апелляций пока нет.</div>
+        </div>
+
+        <div class="tab-panel" id="panel-players">
+          <h2>Игроки</h2>
+          <table id="playersTable">
+            <thead><tr><th>Логин</th><th>IGN</th><th>Роль</th><th>Статус</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="tab-panel" id="panel-mods">
+          <h2>Запрещённые моды</h2>
+          <form class="panel" id="modForm" style="margin-bottom:24px;">
+            <div class="field"><label for="modName">Название</label><input id="modName" required maxlength="60"></div>
+            <div class="field"><label for="modWhy">Причина запрета</label><input id="modWhy" required maxlength="140"></div>
+            <button class="btn primary" type="submit">Добавить в список</button>
+          </form>
+          <div id="modsAdminList"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="footer-root"></div>
+
+<script src="db.js"></script>
+<script src="nav.js"></script>
+<script>
+  renderNav('admin.html');
+  renderFooter();
+  requireAdmin();
+
+  const me = Auth.currentUser();
+  document.getElementById('whoAmI').textContent = me ? (me.ign || me.username) : '';
+
+  // ---- tab switching ----
+  const sideButtons = document.querySelectorAll('.admin-side button');
+  sideButtons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      sideButtons.forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.admin-panel .tab-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  function renderOverview(){
+    document.getElementById('statUsers').textContent = DB.getUsers().length;
+    document.getElementById('statPending').textContent = DB.getAppeals().filter(a=>a.status==='pending').length;
+    document.getElementById('statNews').textContent = DB.getNews().length;
+    document.getElementById('statMods').textContent = DB.getMods().length;
+  }
+
+  function renderNewsAdmin(){
+    const wrap = document.getElementById('newsAdminList');
+    const items = DB.getNews();
+    wrap.innerHTML = items.length ? items.map(n => `
+      <div class="card" style="margin-bottom:10px; display:flex; justify-content:space-between; gap:16px; align-items:flex-start;">
+        <div>
+          <div class="date">${n.date}</div>
+          <h3 style="margin:6px 0;">${escapeHtml(n.title)}</h3>
+          <p class="dim" style="margin:0;">${escapeHtml(n.text)}</p>
+        </div>
+        <button class="btn danger small" data-del-news="${n.id}">Удалить</button>
+      </div>
+    `).join('') : '<div class="empty">Новостей нет.</div>';
+
+    wrap.querySelectorAll('[data-del-news]').forEach(b=>{
+      b.addEventListener('click', ()=>{ DB.deleteNews(b.dataset.delNews); refreshAll(); });
+    });
+  }
+
+  document.getElementById('newsForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    const title = document.getElementById('newsTitle').value.trim();
+    const text = document.getElementById('newsText').value.trim();
+    if(!title || !text) return;
+    DB.addNews(title, text);
+    e.target.reset();
+    refreshAll();
+  });
+
+  function renderAppeals(){
+    const tbody = document.querySelector('#appealsTable tbody');
+    const appeals = DB.getAppeals();
+    document.getElementById('appealsEmpty').style.display = appeals.length ? 'none' : 'block';
+    tbody.innerHTML = appeals.map(a => `
+      <tr>
+        <td>${escapeHtml(a.ign)}</td>
+        <td>${escapeHtml(a.reason)}</td>
+        <td style="max-width:280px;">${escapeHtml(a.message)}</td>
+        <td><span class="badge ${a.status}">${a.status === 'pending' ? 'ожидает' : a.status === 'approved' ? 'принята' : 'отклонена'}</span></td>
+        <td class="row-actions">
+          <button class="btn small" data-approve="${a.id}">Принять</button>
+          <button class="btn danger small" data-reject="${a.id}">Отклонить</button>
+        </td>
+      </tr>
+    `).join('');
+
+    tbody.querySelectorAll('[data-approve]').forEach(b=>b.addEventListener('click', ()=>{ DB.setAppealStatus(b.dataset.approve,'approved'); refreshAll(); }));
+    tbody.querySelectorAll('[data-reject]').forEach(b=>b.addEventListener('click', ()=>{ DB.setAppealStatus(b.dataset.reject,'rejected'); refreshAll(); }));
+  }
+
+  function renderPlayers(){
+    const tbody = document.querySelector('#playersTable tbody');
+    const users = DB.getUsers();
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td>${escapeHtml(u.username)}</td>
+        <td>${escapeHtml(u.ign || u.username)}</td>
+        <td><span class="badge ${u.role}">${u.role}</span></td>
+        <td><span class="badge ${u.banned ? 'banned' : 'approved'}">${u.banned ? 'заблокирован' : 'активен'}</span></td>
+        <td class="row-actions">
+          ${u.username === me.username ? '<span class="dim">это ты</span>' : `<button class="btn small" data-toggle-ban="${u.username}">${u.banned ? 'Разблокировать' : 'Заблокировать'}</button>`}
+        </td>
+      </tr>
+    `).join('');
+
+    tbody.querySelectorAll('[data-toggle-ban]').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        const users = DB.getUsers();
+        const u = users.find(x=>x.username===b.dataset.toggleBan);
+        if(u) u.banned = !u.banned;
+        DB.saveUsers(users);
+        refreshAll();
+      });
+    });
+  }
+
+  function renderModsAdmin(){
+    const wrap = document.getElementById('modsAdminList');
+    const mods = DB.getMods();
+    wrap.innerHTML = mods.length ? mods.map(m => `
+      <div class="card mod-row" style="margin-bottom:10px;">
+        <div><div class="name">${escapeHtml(m.name)}</div><div class="why">${escapeHtml(m.why)}</div></div>
+        <button class="btn danger small" data-del-mod="${m.id}">Удалить</button>
+      </div>
+    `).join('') : '<div class="empty">Список пуст.</div>';
+
+    wrap.querySelectorAll('[data-del-mod]').forEach(b=>{
+      b.addEventListener('click', ()=>{ DB.deleteMod(b.dataset.delMod); refreshAll(); });
+    });
+  }
+
+  document.getElementById('modForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    const name = document.getElementById('modName').value.trim();
+    const why = document.getElementById('modWhy').value.trim();
+    if(!name || !why) return;
+    DB.addMod(name, why);
+    e.target.reset();
+    refreshAll();
+  });
+
+  function refreshAll(){
+    renderOverview();
+    renderNewsAdmin();
+    renderAppeals();
+    renderPlayers();
+    renderModsAdmin();
+  }
+  refreshAll();
+</script>
+</body>
+</html>

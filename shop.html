@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Магазин — REALLYANARCHY</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="nav-root"></div>
+<main>
+  <section>
+    <div class="wrap">
+      <h1>Магазин</h1>
+      <p class="dim" style="max-width:560px;margin-bottom:24px;">Покупка привилегий и косметики происходит на официальной странице доната. Нажми «Купить» — попадёшь туда.</p>
+      <div class="grid news" id="shopGrid"></div>
+    </div>
+  </section>
+</main>
+<div id="footer-root"></div>
+<script src="db.js"></script>
+<script src="nav.js"></script>
+<script>
+  renderNav('shop.html'); renderFooter();
+  const items = [
+    { name:'VIP', price:'5$', desc:'Косметический статус, цветной ник.' },
+    { name:'MVP', price:'12$', desc:'Эксклюзивный набор косметики.' },
+    { name:'Кейс с ресурсами', price:'3$', desc:'Случайные ресурсы для старта.' }
+  ];
+  document.getElementById('shopGrid').innerHTML = items.map(i => `
+    <div class="card news-card">
+      <h3>${escapeHtml(i.name)}</h3>
+      <p style="color:var(--lime);font-weight:700;">${escapeHtml(i.price)}</p>
+      <p>${escapeHtml(i.desc)}</p>
+      <a class="btn primary block" href="${SHOP_URL}" target="_blank" rel="noopener">Купить</a>
+    </div>
+  `).join('');
+</script>
+</body>
+</html>

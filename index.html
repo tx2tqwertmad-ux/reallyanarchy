@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>REALLYANARCHY — Minecraft Anarchy сервер</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="nav-root"></div>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="console" id="bootLog" aria-label="Лог загрузки сервера"></div>
+      <h1 class="hero-title">REALLY<span>ANARCHY</span></h1>
+      <p class="hero-sub">Ванильная анархия без телепортов, кланов и защиты территории. Один мир, все против всех — выживай, строй, отжимай базы. Правила есть, но их немного.</p>
+      <div class="hero-actions">
+        <a href="#" id="shopBtn" class="btn primary" target="_blank" rel="noopener">Магазин доната</a>
+        <a href="rules.html" class="btn">Правила проекта</a>
+        <a href="appeal.html" class="btn">Подать апелляцию</a>
+      </div>
+      <div class="ip-box">
+        <span class="dim">IP сервера:</span>
+        <code id="serverIp">reallyanarchy.mclan.ru</code>
+        <button id="copyIpBtn" type="button">Копировать</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Новости проекта</h2>
+      </div>
+      <div class="grid news" id="newsGrid"></div>
+    </div>
+  </section>
+</main>
+
+<div id="footer-root"></div>
+
+<script src="db.js"></script>
+<script src="nav.js"></script>
+<script>
+  renderNav('index.html');
+  renderFooter();
+  document.getElementById('shopBtn').href = SHOP_URL;
+  document.getElementById('copyIpBtn').addEventListener('click', ()=>{
+    navigator.clipboard.writeText(document.getElementById('serverIp').textContent);
+    const b = document.getElementById('copyIpBtn');
+    b.textContent = 'Скопировано!';
+    setTimeout(()=> b.textContent = 'Копировать', 1500);
+  });
+
+  // boot log animation
+  const lines = [
+    '[boot] initializing world "anarchy_main"...',
+    '[boot] loading region files... ok',
+    '[boot] anticheat module: ONLINE',
+    '[warn] no protected claims found — this is intentional',
+    `[server] players online: ${12 + Math.floor(Math.random()*40)}`,
+    '[server] type /rules in chat for the short version',
+    '> welcome to REALLYANARCHY_'
+  ];
+  const el = document.getElementById('bootLog');
+  let delay = 0;
+  lines.forEach((text, i)=>{
+    const div = document.createElement('div');
+    div.className = 'ln' + (text.startsWith('[warn]') ? ' warn' : '');
+    div.style.animationDelay = delay + 'ms';
+    div.textContent = text;
+    if(i === lines.length - 1){
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor';
+      div.appendChild(cursor);
+    }
+    el.appendChild(div);
+    delay += 260;
+  });
+
+  // news feed
+  const grid = document.getElementById('newsGrid');
+  const news = DB.getNews();
+  if(news.length === 0){
+    grid.innerHTML = '<div class="empty">Новостей пока нет.</div>';
+  } else {
+    grid.innerHTML = news.map(n => `
+      <article class="card news-card">
+        <div class="date">${n.date}</div>
+        <h3>${escapeHtml(n.title)}</h3>
+        <p>${escapeHtml(n.text)}</p>
+      </article>
+    `).join('');
+  }
+</script>
+</body>
+</html>

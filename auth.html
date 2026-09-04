@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Вход / Регистрация — REALLYANARCHY</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="nav-root"></div>
+
+<main>
+  <section>
+    <div class="wrap">
+      <h1>Личный кабинет</h1>
+
+      <div class="tabs">
+        <button class="tab-btn active" id="tabLoginBtn">Вход</button>
+        <button class="tab-btn" id="tabRegisterBtn">Регистрация</button>
+      </div>
+
+      <div class="tab-panel active" id="tabLogin">
+        <form class="panel" id="loginForm">
+          <div class="field">
+            <label for="loginUser">Логин</label>
+            <input type="text" id="loginUser" required autocomplete="username">
+          </div>
+          <div class="field">
+            <label for="loginPass">Пароль</label>
+            <input type="password" id="loginPass" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn primary block">Войти</button>
+          <div class="form-msg" id="loginMsg"></div>
+        </form>
+      </div>
+
+      <div class="tab-panel" id="tabRegister">
+        <form class="panel" id="registerForm">
+          <div class="field">
+            <label for="regUser">Логин для сайта</label>
+            <input type="text" id="regUser" required autocomplete="username" minlength="3">
+          </div>
+          <div class="field">
+            <label for="regIgn">Ник в игре (IGN)</label>
+            <input type="text" id="regIgn" maxlength="24" placeholder="если отличается от логина">
+          </div>
+          <div class="field">
+            <label for="regPass">Пароль</label>
+            <input type="password" id="regPass" required autocomplete="new-password" minlength="4">
+          </div>
+          <button type="submit" class="btn primary block">Зарегистрироваться</button>
+          <div class="form-msg" id="registerMsg"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="footer-root"></div>
+
+<script src="db.js"></script>
+<script src="nav.js"></script>
+<script>
+  renderNav('auth.html');
+  renderFooter();
+
+  if(Auth.currentUser()){ location.href = 'index.html'; }
+
+  const tabLoginBtn = document.getElementById('tabLoginBtn');
+  const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+  const tabLogin = document.getElementById('tabLogin');
+  const tabRegister = document.getElementById('tabRegister');
+
+  tabLoginBtn.addEventListener('click', ()=>{
+    tabLoginBtn.classList.add('active'); tabRegisterBtn.classList.remove('active');
+    tabLogin.classList.add('active'); tabRegister.classList.remove('active');
+  });
+  tabRegisterBtn.addEventListener('click', ()=>{
+    tabRegisterBtn.classList.add('active'); tabLoginBtn.classList.remove('active');
+    tabRegister.classList.add('active'); tabLogin.classList.remove('active');
+  });
+
+  document.getElementById('loginForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    const res = Auth.login(document.getElementById('loginUser').value.trim(), document.getElementById('loginPass').value);
+    const el = document.getElementById('loginMsg');
+    if(res.ok){ location.href = 'index.html'; }
+    else { el.className = 'form-msg err'; el.textContent = res.msg; }
+  });
+
+  document.getElementById('registerForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    const res = Auth.register(
+      document.getElementById('regUser').value.trim(),
+      document.getElementById('regPass').value,
+      document.getElementById('regIgn').value.trim()
+    );
+    const el = document.getElementById('registerMsg');
+    if(res.ok){ location.href = 'index.html'; }
+    else { el.className = 'form-msg err'; el.textContent = res.msg; }
+  });
+</script>
+</body>
+</html>

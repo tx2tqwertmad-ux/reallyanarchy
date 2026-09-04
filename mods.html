@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Запрещённые моды — REALLYANARCHY</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="nav-root"></div>
+
+<main>
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h1>Запрещённые модификации</h1>
+          <p class="dim" style="max-width:640px;">Список обновляет администрация. Наличие клиента из списка на компьютере не наказывается — наказывается использование на сервере, подтверждённое античитом или модератором.</p>
+        </div>
+      </div>
+      <div id="modsList" class="grid" style="grid-template-columns:1fr;"></div>
+    </div>
+  </section>
+</main>
+
+<div id="footer-root"></div>
+
+<script src="db.js"></script>
+<script src="nav.js"></script>
+<script>
+  renderNav('mods.html');
+  renderFooter();
+
+  const list = document.getElementById('modsList');
+  const mods = DB.getMods();
+  list.innerHTML = mods.length ? mods.map(m => `
+    <div class="card mod-row">
+      <div>
+        <div class="name">${escapeHtml(m.name)}</div>
+        <div class="why">${escapeHtml(m.why)}</div>
+      </div>
+      <span class="badge rejected">запрещено</span>
+    </div>
+  `).join('') : '<div class="empty">Список пуст.</div>';
+</script>
+</body>
+</html>

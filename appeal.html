@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Апелляция — REALLYANARCHY</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="nav-root"></div>
+
+<main>
+  <section>
+    <div class="wrap">
+      <h1>Подать апелляцию на бан</h1>
+      <p class="dim" style="max-width:520px; margin-bottom:24px;">Заполни форму честно и подробно — заявки без объяснения причины бана рассматриваются в последнюю очередь. Ответ появится в статусе твоей заявки в личном кабинете.</p>
+
+      <form class="panel" id="appealForm">
+        <div class="field">
+          <label for="ign">Ник в игре (IGN)</label>
+          <input type="text" id="ign" required maxlength="24" placeholder="Steve_1337">
+        </div>
+        <div class="field">
+          <label for="reason">За что, по-твоему, ты получил бан</label>
+          <input type="text" id="reason" required maxlength="120" placeholder="Например: x-ray, по ошибке античита">
+        </div>
+        <div class="field">
+          <label for="message">Объясни ситуацию подробно</label>
+          <textarea id="message" required maxlength="1000" placeholder="Что произошло, почему считаешь бан ошибочным или как готов исправиться"></textarea>
+        </div>
+        <button type="submit" class="btn primary block">Отправить апелляцию</button>
+        <div class="form-msg" id="formMsg"></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<div id="footer-root"></div>
+
+<script src="db.js"></script>
+<script src="nav.js"></script>
+<script>
+  renderNav('appeal.html');
+  renderFooter();
+
+  const form = document.getElementById('appealForm');
+  const msg = document.getElementById('formMsg');
+
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    const ign = document.getElementById('ign').value.trim();
+    const reason = document.getElementById('reason').value.trim();
+    const message = document.getElementById('message').value.trim();
+    if(!ign || !reason || !message){
+      msg.className = 'form-msg err';
+      msg.textContent = 'Заполни все поля.';
+      return;
+    }
+    const user = Auth.currentUser();
+    DB.addAppeal({ ign, reason, message, submittedBy: user ? user.username : 'гость (без аккаунта)' });
+    form.reset();
+    msg.className = 'form-msg ok';
+    msg.textContent = 'Апелляция отправлена. Администрация рассмотрит её в ближайшее время.';
+  });
+</script>
+</body>
+</html>

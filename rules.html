@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Правила — REALLYANARCHY</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="nav-root"></div>
+
+<main>
+  <section>
+    <div class="wrap">
+      <h1>Правила проекта</h1>
+      <p class="dim" style="max-width:640px;">Это анархия — гриферство, PvP и отжим баз разрешены по умолчанию. Ниже — то немногое, что действительно запрещено и карается баном.</p>
+
+      <ol class="rules-list">
+        <li>
+          <div>
+            <b>Читы и сторонние клиенты, дающие нечестное преимущество</b> — x-ray, killaura, reach-хаки, автофарм-макросы.
+            <span class="penalty">Наказание: перманентный бан без предупреждения.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <b>Использование багов и дюп-предметов</b> — эксплойты игры и сервера, дублирование ресурсов.
+            <span class="penalty">Наказание: бан от 7 дней до перманентного, откат дюпнутых предметов.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <b>DDoS, крэш-атаки и попытки положить сервер</b> — включая крэш-машины и лаг-генераторы.
+            <span class="penalty">Наказание: перманентный бан + возможная блокировка по IP.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <b>Реклама сторонних серверов и ресурсов</b> в чате, на табличках, в никах.
+            <span class="penalty">Наказание: мут 3 дня, при повторе — бан.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <b>Оскорбления, травля, разжигание</b> за пределы обычного анархийного «токсика».
+            <span class="penalty">Наказание: мут от 1 до 7 дней по решению модератора.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <b>NSFW и запрещённый законом контент</b> — постройки, скины, баннеры, чат.
+            <span class="penalty">Наказание: перманентный бан.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <b>Мультиаккаунтинг для обхода бана</b> — вход с другого аккаунта после блокировки.
+            <span class="penalty">Наказание: бан всех связанных аккаунтов.</span>
+          </div>
+        </li>
+      </ol>
+
+      <div class="card" style="max-width:640px; margin-top:24px;">
+        <h3>Получил бан и не согласен?</h3>
+        <p class="dim" style="margin-bottom:14px;">Подай апелляцию — команда рассмотрит её и примет решение.</p>
+        <a href="appeal.html" class="btn primary">Подать апелляцию</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="footer-root"></div>
+
+<script src="db.js"></script>
+<script src="nav.js"></script>
+<script>
+  renderNav('rules.html');
+  renderFooter();
+</script>
+</body>
+</html>
