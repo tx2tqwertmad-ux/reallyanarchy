@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Форум — REALLYANARCHY</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .forum-section {
+    margin-bottom: 24px;
+  }
+  .forum-section h3 {
+    font-size: 14px;
+    color: var(--lime);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-lo);
+  }
+  .forum-category {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .forum-category:hover {
+    border-color: var(--lime);
+  }
+  .forum-category .name {
+    color: var(--text);
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .forum-category .desc {
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+  .forum-category .stats {
+    color: var(--text-dim);
+    font-size: 12px;
+    text-align: right;
+    min-width: 80px;
+  }
+  .forum-category .stats span {
+    display: block;
+  }
+  .forum-topics {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-top: 4px;
+    padding: 8px 0;
+  }
+  .forum-topic {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border-lo);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .forum-topic:last-child {
+    border-bottom: none;
+  }
+  .forum-topic .title {
+    color: var(--text);
+    font-weight: 500;
+  }
+  .forum-topic .title:hover {
+    color: var(--lime);
+    cursor: pointer;
+  }
+  .forum-topic .meta {
+    color: var(--text-dim);
+    font-size: 12px;
+  }
+  .forum-topic .replies {
+    color: var(--text-dim);
+    font-size: 12px;
+    min-width: 60px;
+    text-align: right;
+  }
+  .badge-new {
+    background: var(--lime);
+    color: #141400;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: 8px;
+  }
+  .forum-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .topic-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .topic-modal.active {
+    display: flex;
+  }
+  .topic-modal-content {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    max-width: 560px;
+    width: 90%;
+  }
+  .topic-modal-content .field {
+    margin-bottom: 14px;
+  }
+  .topic-modal-content label {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .topic-modal-content input, 
+  .topic-modal-content textarea {
+    width: 100%;
+    background: #111211;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+  .topic-modal-content textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+  .topic-modal-content .btn {
+    margin-top: 8px;
+  }
+  .close-modal {
+    float: right;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .close-modal:hover {
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+<div id="nav-root"></div>
+
+<main>
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <h1>Форум</h1>
+        <p class="dim">Общайся, задавай вопросы, делись опытом</p>
+      </div>
+
+      <!-- ОСНОВНЫЕ РАЗДЕЛЫ -->
+      <div id="forumContainer"></div>
+
+      <!-- КНОПКА СОЗДАТЬ ТЕМУ -->
+      <div class="forum-actions">
+        <button class="btn primary" id="newTopicBtn">+ Создать тему</button>
+      </div>
+
+      <!-- МОДАЛЬНОЕ ОКНО ДЛЯ СОЗДАНИЯ ТЕМЫ -->
+      <div class="topic-modal" id="topicModal">
+        <div class="topic-modal-content">
+          <button class="close-modal" id="closeModalBtn">&times;</button>
+          <h3 style="margin-bottom:16px;">Создать новую тему</h3>
+          <form id="newTopicForm">
+            <div class="field">
+              <label for="topicCategory">Раздел</label>
+              <select id="topicCategory" required>
+                <option value="info">Информация для игроков</option>
+                <option value="tech">Технический раздел</option>
+                <option value="complaints">Жалобы и апелляции</option>
+                <option value="chat">Общение</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="topicTitle">Заголовок</label>
+              <input type="text" id="topicTitle" required maxlength="80" placeholder="Название темы">
+            </div>
+            <div class="field">
+              <label for="topicText">Текст</label>
+              <textarea id="topicText" required maxlength="600" placeholder="Что вы хотите сказать?"></textarea>
+            </div>
+            <button type="submit" class="btn primary block">Опубликовать</button>
+            <div class="form-msg" id="topicMsg"></div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<div id="footer-root"></div>
+
+<script src="db.js"></script>
+<script src="nav.js"></script>
+<script>
+  renderNav('forum.html');
+  renderFooter();
+
+  // === ДАННЫЕ ===
+  const FORUM_KEY = 'ra_forum';
+
+  function getForumData() {
+    const raw = localStorage.getItem(FORUM_KEY);
+    if (raw) {
+      try { return JSON.parse(raw); } catch(e) {}
+    }
+    // Начальные данные
+    const data = {
+      categories: {
+        info: { name: 'Информация для игроков', topics: [
+          { id: 1, title: 'Правила проекта', author: 'admin', replies: 2, last: '12.06.2026' }
+        ]},
+        tech: { name: 'Технический раздел', topics: [
+          { id: 2, title: 'Ваши идеи и предложения', author: 'admin', replies: 129, last: '10.06.2026' },
+          { id: 3, title: 'Баги', author: 'admin', replies: 71, last: '09.06.2026' }
+        ]},
+        complaints: { name: 'Жалобы и апелляции', topics: [
+          { id: 4, title: 'Жалобы на игроков', author: 'admin', replies: 364, last: '08.06.2026' },
+          { id: 5, title: 'Жалобы на модерацию', author: 'admin', replies: 125, last: '07.06.2026' },
+          { id: 6, title: 'Апелляции', author: 'admin', replies: 956, last: '06.06.2026' }
+        ]},
+        chat: { name: 'Общение', topics: [
+          { id: 7, title: 'РЕКОМЕНДУЕМЫЙ КОНТЕНТ', author: 'admin', replies: 1, last: '12.06.2026' }
+        ]}
+      },
+      messages: {}
+    };
+    localStorage.setItem(FORUM_KEY, JSON.stringify(data));
+    return data;
+  }
+
+  function saveForumData(data) {
+    localStorage.setItem(FORUM_KEY, JSON.stringify(data));
+  }
+
+  function getCategoryKey(catName) {
+    const map = {
+      'Информация для игроков': 'info',
+      'Технический раздел': 'tech',
+      'Жалобы и апелляции': 'complaints',
+      'Общение': 'chat'
+    };
+    return map[catName] || 'chat';
+  }
+
+  // === ОТОБРАЖЕНИЕ ФОРУМА ===
+  function renderForum() {
+    const data = getForumData();
+    const container = document.getElementById('forumContainer');
+    
+    let html = '';
+    for (const [key, cat] of Object.entries(data.categories)) {
+      const totalReplies = cat.topics.reduce((sum, t) => sum + t.replies, 0);
+      html += `
+        <div class="forum-section">
+          <h3>${cat.name}</h3>
+          ${cat.topics.map(t => `
+            <div class="forum-category" onclick="openTopic('${key}', ${t.id})">
+              <div>
+                <div class="name">${escapeHtml(t.title)}</div>
+                <div class="desc">Автор: ${escapeHtml(t.author)}</div>
+              </div>
+              <div class="stats">
+                <span>Ответов: ${t.replies}</span>
+                <span style="font-size:10px;">${t.last || 'недавно'}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+    container.innerHTML = html;
+  }
+
+  // === ОТКРЫТИЕ ТЕМЫ ===
+  window.openTopic = function(categoryKey, topicId) {
+    const data = getForumData();
+    const cat = data.categories[categoryKey];
+    const topic = cat.topics.find(t => t.id === topicId);
+    if (!topic) return;
+
+    const msg = data.messages[topicId] || [];
+    alert(`📄 ${topic.title}\n\nАвтор: ${topic.author}\nОтветов: ${topic.replies}\n\n${msg.join('\n') || 'Нет сообщений.'}`);
+  };
+
+  // === СОЗДАНИЕ НОВОЙ ТЕМЫ ===
+  document.getElementById('newTopicBtn').addEventListener('click', () => {
+    document.getElementById('topicModal').classList.add('active');
+  });
+
+  document.getElementById('closeModalBtn').addEventListener('click', () => {
+    document.getElementById('topicModal').classList.remove('active');
+  });
+
+  document.getElementById('topicModal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) {
+      document.getElementById('topicModal').classList.remove('active');
+    }
+  });
+
+  document.getElementById('newTopicForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const category = document.getElementById('topicCategory').value;
+    const title = document.getElementById('topicTitle').value.trim();
+    const text = document.getElementById('topicText').value.trim();
+    const msgEl = document.getElementById('topicMsg');
+
+    if (!title || !text) {
+      msgEl.className = 'form-msg err';
+      msgEl.textContent = 'Заполните все поля.';
+      return;
+    }
+
+    const data = getForumData();
+    const user = Auth.currentUser();
+    const author = user ? user.username : 'Гость';
+
+    const newTopic = {
+      id: Date.now(),
+      title: title,
+      author: author,
+      replies: 0,
+      last: new Date().toLocaleDateString('ru-RU')
+    };
+
+    data.categories[category].topics.push(newTopic);
+    data.messages[newTopic.id] = [text];
+    saveForumData(data);
+
+    msgEl.className = 'form-msg ok';
+    msgEl.textContent = 'Тема создана!';
+    document.getElementById('topicTitle').value = '';
+    document.getElementById('topicText').value = '';
+
+    setTimeout(() => {
+      document.getElementById('topicModal').classList.remove('active');
+      renderForum();
+    }, 800);
+  });
+
+  // === ЗАПУСК ===
+  renderForum();
+</script>
+</body>
+</html>
