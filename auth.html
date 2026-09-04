@@ -41,10 +41,6 @@
             <input type="text" id="regUser" required autocomplete="username" minlength="3">
           </div>
           <div class="field">
-            <label for="regEmail">Email (на него придёт код)</label>
-            <input type="email" id="regEmail" required autocomplete="email">
-          </div>
-          <div class="field">
             <label for="regIgn">Ник в игре (IGN)</label>
             <input type="text" id="regIgn" maxlength="24" placeholder="если отличается от логина">
           </div>
@@ -86,7 +82,10 @@
 
   document.getElementById('loginForm').addEventListener('submit', e=>{
     e.preventDefault();
-    const res = Auth.login(document.getElementById('loginUser').value.trim(), document.getElementById('loginPass').value);
+    const res = await Auth.login(
+      document.getElementById('loginUser').value.trim(),
+      document.getElementById('loginPass').value
+    );
     const el = document.getElementById('loginMsg');
     if(res.ok){ location.href = 'index.html'; }
     else { el.className = 'form-msg err'; el.textContent = res.msg; }
@@ -94,9 +93,8 @@
 
   document.getElementById('registerForm').addEventListener('submit', e=>{
     e.preventDefault();
-    const res = Auth.register(
+    const res = await Auth.register(
       document.getElementById('regUser').value.trim(),
-      document.getElementById('regEmail').value.trim(),
       document.getElementById('regPass').value,
       document.getElementById('regIgn').value.trim()
     );
