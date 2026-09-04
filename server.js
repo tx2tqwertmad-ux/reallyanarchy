@@ -65,7 +65,28 @@ async function createTables() {
   }
 }
 
+// === СОЗДАНИЕ АДМИНИСТРАТОРА ===
+async function createAdmin() {
+  try {
+    const result = await pool.query("SELECT * FROM users WHERE username = 'tufhj'");
+    if (result.rows.length === 0) {
+      const hashedPassword = await bcrypt.hash('changeme123', 10);
+      await pool.query(
+        "INSERT INTO users (username, email, password, ign, role, verified) VALUES ($1, $2, $3, $4, $5, $6)",
+        ['tufhj', 'admin@reallyanarchy.local', hashedPassword, 'tufhj', 'admin', true]
+      );
+      console.log('✅ Администратор создан (логин: tufhj, пароль: changeme123)');
+    } else {
+      console.log('✅ Администратор уже существует');
+    }
+  } catch (err) {
+    console.error('❌ Ошибка создания администратора:', err);
+  }
+}
+
+// === ЗАПУСК СОЗДАНИЯ ===
 createTables();
+createAdmin();
 
 function todayStr() {
   return new Date().toLocaleDateString('ru-RU', { 
@@ -75,11 +96,11 @@ function todayStr() {
   });
 }
 
-// === РЕГИСТРАЦИЯ (без почты) ===
+// === РЕГИСТРАЦИЯ ===
 app.post('/api/register', async (req, res) => {
-  const { username, email, password, ign } = req.body;
+  const { username, password, ign } = req.body;
   try {
-    const existing = await pool.query('SELECT * FROM users WHERE username = $1 OR email = $2', [username, email]);
+    const existing = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
     if (existing.rows.length > 0) {
       return res.json({ ok: false, msg: 'Пользователь уже существует' });
     }
@@ -87,7 +108,7 @@ app.post('/api/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     await pool.query(
       'INSERT INTO users (username, email, password, ign, verified) VALUES ($1, $2, $3, $4, $5)',
-      [username, email, hashedPassword, ign || username, true]
+      [username, username + '@temp.local', hashedPassword, ign || username, true]
     );
 
     const user = await pool.query('SELECT username, role, ign FROM users WHERE username = $1', [username]);
