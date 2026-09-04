@@ -3,37 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>REALLYANARCHY — Minecraft Anarchy сервер</title>
+<title>Вход / Регистрация — REALLYANARCHY</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="nav-root"></div>
 
 <main>
-  <section class="hero">
-    <div class="wrap">
-      <div class="console" id="bootLog" aria-label="Лог загрузки сервера"></div>
-      <h1 class="hero-title">REALLY<span>ANARCHY</span></h1>
-      <p class="hero-sub">Ванильная анархия без телепортов, кланов и защиты территории. Один мир, все против всех — выживай, строй, отжимай базы. Правила есть, но их немного.</p>
-      <div class="hero-actions">
-        <a href="#" id="shopBtn" class="btn primary" target="_blank" rel="noopener">Магазин доната</a>
-        <a href="rules.html" class="btn">Правила проекта</a>
-        <a href="appeal.html" class="btn">Подать апелляцию</a>
-      </div>
-      <div class="ip-box">
-        <span class="dim">IP сервера:</span>
-        <code id="serverIp">reallyanarchy.mclan.ru</code>
-        <button id="copyIpBtn" type="button">Копировать</button>
-      </div>
-    </div>
-  </section>
-
   <section>
     <div class="wrap">
-      <div class="section-head">
-        <h2>Новости проекта</h2>
+      <h1>Личный кабинет</h1>
+
+      <div class="tabs">
+        <button class="tab-btn active" id="tabLoginBtn">Вход</button>
+        <button class="tab-btn" id="tabRegisterBtn">Регистрация</button>
       </div>
-      <div class="grid news" id="newsGrid"></div>
+
+      <div class="tab-panel active" id="tabLogin">
+        <form class="panel" id="loginForm">
+          <div class="field">
+            <label for="loginUser">Логин</label>
+            <input type="text" id="loginUser" required autocomplete="username">
+          </div>
+          <div class="field">
+            <label for="loginPass">Пароль</label>
+            <input type="password" id="loginPass" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn primary block">Войти</button>
+          <div class="form-msg" id="loginMsg"></div>
+        </form>
+      </div>
+
+      <div class="tab-panel" id="tabRegister">
+        <form class="panel" id="registerForm">
+          <div class="field">
+            <label for="regUser">Логин для сайта</label>
+            <input type="text" id="regUser" required autocomplete="username" minlength="3">
+          </div>
+          <div class="field">
+            <label for="regIgn">Ник в игре (IGN)</label>
+            <input type="text" id="regIgn" maxlength="24" placeholder="если отличается от логина">
+          </div>
+          <div class="field">
+            <label for="regPass">Пароль</label>
+            <input type="password" id="regPass" required autocomplete="new-password" minlength="4">
+          </div>
+          <button type="submit" class="btn primary block">Зарегистрироваться</button>
+          <div class="form-msg" id="registerMsg"></div>
+        </form>
+      </div>
     </div>
   </section>
 </main>
@@ -43,66 +61,94 @@
 <script src="db.js"></script>
 <script src="nav.js"></script>
 <script>
-  renderNav('index.html');
+  renderNav('auth.html');
   renderFooter();
-  document.getElementById('shopBtn').href = SHOP_URL;
-  document.getElementById('copyIpBtn').addEventListener('click', ()=>{
-    navigator.clipboard.writeText(document.getElementById('serverIp').textContent);
-    const b = document.getElementById('copyIpBtn');
-    b.textContent = 'Скопировано!';
-    setTimeout(()=> b.textContent = 'Копировать', 1500);
-  });
 
-  // boot log animation
-  const lines = [
-    '[boot] initializing world "anarchy_main"...',
-    '[boot] loading region files... ok',
-    '[boot] anticheat module: ONLINE',
-    '[warn] no protected claims found — this is intentional',
-    `[server] players online: ${12 + Math.floor(Math.random()*40)}`,
-    '[server] type /rules in chat for the short version',
-    '> welcome to REALLYANARCHY_'
-  ];
-  const el = document.getElementById('bootLog');
-  let delay = 0;
-  lines.forEach((text, i)=>{
-    const div = document.createElement('div');
-    div.className = 'ln' + (text.startsWith('[warn]') ? ' warn' : '');
-    div.style.animationDelay = delay + 'ms';
-    div.textContent = text;
-    if(i === lines.length - 1){
-      const cursor = document.createElement('span');
-      cursor.className = 'cursor';
-      div.appendChild(cursor);
-    }
-    el.appendChild(div);
-    delay += 260;
-  });
-
-  // news feed
-  const grid = document.getElementById('newsGrid');
-
-  async function loadNews() {
-    try {
-      const news = await DB.getNews();
-      if (news.length === 0) {
-        grid.innerHTML = '<div class="empty">Новостей пока нет.</div>';
-      } else {
-        grid.innerHTML = news.map(n => `
-          <article class="card news-card">
-            <div class="date">${n.date}</div>
-            <h3>${escapeHtml(n.title)}</h3>
-            <p>${escapeHtml(n.text)}</p>
-          </article>
-        `).join('');
-      }
-    } catch (error) {
-      console.error('Ошибка загрузки новостей:', error);
-      grid.innerHTML = '<div class="empty">Ошибка загрузки новостей</div>';
-    }
+  // Проверяем, авторизован ли пользователь
+  if (Auth.currentUser()) {
+    location.href = 'index.html';
   }
 
-  loadNews();
+  const tabLoginBtn = document.getElementById('tabLoginBtn');
+  const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+  const tabLogin = document.getElementById('tabLogin');
+  const tabRegister = document.getElementById('tabRegister');
+
+  tabLoginBtn.addEventListener('click', function() {
+    tabLoginBtn.classList.add('active');
+    tabRegisterBtn.classList.remove('active');
+    tabLogin.classList.add('active');
+    tabRegister.classList.remove('active');
+  });
+
+  tabRegisterBtn.addEventListener('click', function() {
+    tabRegisterBtn.classList.add('active');
+    tabLoginBtn.classList.remove('active');
+    tabRegister.classList.add('active');
+    tabLogin.classList.remove('active');
+  });
+
+  // === ВХОД ===
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const username = document.getElementById('loginUser').value.trim();
+    const password = document.getElementById('loginPass').value;
+    const msgEl = document.getElementById('loginMsg');
+
+    if (!username || !password) {
+      msgEl.className = 'form-msg err';
+      msgEl.textContent = 'Заполните все поля.';
+      return;
+    }
+
+    try {
+      const res = await Auth.login(username, password);
+      if (res.ok) {
+        location.href = 'index.html';
+      } else {
+        msgEl.className = 'form-msg err';
+        msgEl.textContent = res.msg || 'Ошибка входа';
+      }
+    } catch (error) {
+      console.error('Ошибка входа:', error);
+      msgEl.className = 'form-msg err';
+      msgEl.textContent = 'Ошибка соединения с сервером';
+    }
+  });
+
+  // === РЕГИСТРАЦИЯ ===
+  document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const username = document.getElementById('regUser').value.trim();
+    const password = document.getElementById('regPass').value;
+    const ign = document.getElementById('regIgn').value.trim();
+    const msgEl = document.getElementById('registerMsg');
+
+    if (username.length < 3) {
+      msgEl.className = 'form-msg err';
+      msgEl.textContent = 'Логин должен быть не короче 3 символов.';
+      return;
+    }
+    if (password.length < 4) {
+      msgEl.className = 'form-msg err';
+      msgEl.textContent = 'Пароль должен быть не короче 4 символов.';
+      return;
+    }
+
+    try {
+      const res = await Auth.register(username, password, ign);
+      if (res.ok) {
+        location.href = 'index.html';
+      } else {
+        msgEl.className = 'form-msg err';
+        msgEl.textContent = res.msg || 'Ошибка регистрации';
+      }
+    } catch (error) {
+      console.error('Ошибка регистрации:', error);
+      msgEl.className = 'form-msg err';
+      msgEl.textContent = 'Ошибка соединения с сервером';
+    }
+  });
 </script>
 </body>
 </html>
