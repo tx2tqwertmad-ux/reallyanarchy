@@ -32,16 +32,30 @@
   renderFooter();
 
   const list = document.getElementById('modsList');
-  const mods = DB.getMods();
-  list.innerHTML = mods.length ? mods.map(m => `
-    <div class="card mod-row">
-      <div>
-        <div class="name">${escapeHtml(m.name)}</div>
-        <div class="why">${escapeHtml(m.why)}</div>
-      </div>
-      <span class="badge rejected">запрещено</span>
-    </div>
-  `).join('') : '<div class="empty">Список пуст.</div>';
+
+  async function loadMods() {
+    try {
+      const mods = await DB.getMods();
+      if (mods.length === 0) {
+        list.innerHTML = '<div class="empty">Список пуст.</div>';
+      } else {
+        list.innerHTML = mods.map(m => `
+          <div class="card mod-row">
+            <div>
+              <div class="name">${escapeHtml(m.name)}</div>
+              <div class="why">${escapeHtml(m.why)}</div>
+            </div>
+            <span class="badge rejected">запрещено</span>
+          </div>
+        `).join('');
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки модов:', error);
+      list.innerHTML = '<div class="empty">Ошибка загрузки модов</div>';
+    }
+  }
+
+  loadMods();
 </script>
 </body>
 </html>
