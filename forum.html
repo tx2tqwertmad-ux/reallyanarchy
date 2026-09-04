@@ -384,6 +384,27 @@
 (function(){
   const API_URL = window.location.origin + '/api';
 
+  // === АВАТАРКИ ===
+  const AVATAR_COLORS = ['#f2b705', '#5fd8c9', '#d9553f', '#7ec97a', '#c98af0', '#5fa8d8', '#f7b731', '#4ecdc4'];
+
+  function avatarColor(name) {
+    let h = 0;
+    for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+    return AVATAR_COLORS[h % AVATAR_COLORS.length];
+  }
+
+  function getUserAvatar(username) {
+    try {
+      const raw = localStorage.getItem('ra_profile_data');
+      if (!raw) return null;
+      const all = JSON.parse(raw);
+      if (all[username] && all[username].avatar) {
+        return all[username].avatar;
+      }
+      return null;
+    } catch(e) { return null; }
+  }
+
   // ===== ФУНКЦИИ ДЛЯ РАБОТЫ С СЕРВЕРОМ =====
   async function getTopics(sectionKey, subforumKey) {
     try {
@@ -857,12 +878,17 @@
       <span>${topic.replies} ответов</span>
     `;
 
+    // === СООБЩЕНИЯ С АВАТАРКАМИ ===
     document.getElementById('postsList').innerHTML = messages.map((msg, i) => {
       const author = msg.author || 'Гость';
+      const avatar = getUserAvatar(author);
       return `
         <div class="post-item">
           <div class="post-side">
-            <div class="post-avatar" style="background:#f2b705;">${escapeHtml(author.slice(0,1).toUpperCase())}</div>
+            ${avatar 
+              ? `<img src="${avatar}" class="post-avatar-img" alt="${escapeHtml(author)}">`
+              : `<div class="post-avatar" style="background:${avatarColor(author)};">${escapeHtml(author.slice(0,1).toUpperCase())}</div>`
+            }
             <div class="post-author">${escapeHtml(author)}</div>
             <div class="post-num">#${i + 1}</div>
           </div>
