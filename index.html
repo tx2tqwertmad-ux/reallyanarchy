@@ -16,9 +16,9 @@
       <div class="console" id="bootLog" aria-label="Лог загрузки сервера"></div>
       
       <h1 class="hero-title">REALLY<span>ANARCHY</span></h1>
-      <p class="hero-sub">Ванильная анархия без телепортов, кланов и защиты территории. Один мир, все против всех — выживай, строй, отжимай базы. Правила есть, но их немного.</p>
+      <p class="hero-sub">Настоящая анархия без правил, кланов, приватов и ивентов. Только хардкор, выживание и отжим баз. Ты сам выбираешь свою судьбу — доверяй только себе.</p>
       <div class="hero-actions">
-        <a href="#" id="shopBtn" class="btn primary" target="_blank" rel="noopener">Магазин доната</a>
+        <a href="https://reallyanarchy.easydonate.ru/" class="btn primary" target="_blank" rel="noopener">Магазин доната</a>
         <a href="rules.html" class="btn">Правила проекта</a>
         <a href="appeal.html" class="btn">Подать апелляцию</a>
       </div>
@@ -47,7 +47,6 @@
 <script>
   renderNav('index.html');
   renderFooter();
-  document.getElementById('shopBtn').href = SHOP_URL;
   document.getElementById('copyIpBtn').addEventListener('click', ()=>{
     navigator.clipboard.writeText(document.getElementById('serverIp').textContent);
     const b = document.getElementById('copyIpBtn');
