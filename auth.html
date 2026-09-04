@@ -64,43 +64,68 @@
   renderNav('auth.html');
   renderFooter();
 
-  if(Auth.currentUser()){ location.href = 'index.html'; }
+  if (Auth.currentUser()) {
+    location.href = 'index.html';
+  }
 
   const tabLoginBtn = document.getElementById('tabLoginBtn');
   const tabRegisterBtn = document.getElementById('tabRegisterBtn');
   const tabLogin = document.getElementById('tabLogin');
   const tabRegister = document.getElementById('tabRegister');
 
-  tabLoginBtn.addEventListener('click', ()=>{
-    tabLoginBtn.classList.add('active'); tabRegisterBtn.classList.remove('active');
-    tabLogin.classList.add('active'); tabRegister.classList.remove('active');
-  });
-  tabRegisterBtn.addEventListener('click', ()=>{
-    tabRegisterBtn.classList.add('active'); tabLoginBtn.classList.remove('active');
-    tabRegister.classList.add('active'); tabLogin.classList.remove('active');
+  tabLoginBtn.addEventListener('click', function() {
+    tabLoginBtn.classList.add('active');
+    tabRegisterBtn.classList.remove('active');
+    tabLogin.classList.add('active');
+    tabRegister.classList.remove('active');
   });
 
-  document.getElementById('loginForm').addEventListener('submit', e=>{
+  tabRegisterBtn.addEventListener('click', function() {
+    tabRegisterBtn.classList.add('active');
+    tabLoginBtn.classList.remove('active');
+    tabRegister.classList.add('active');
+    tabLogin.classList.remove('active');
+  });
+
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const res = await Auth.login(
-      document.getElementById('loginUser').value.trim(),
-      document.getElementById('loginPass').value
-    );
+    const username = document.getElementById('loginUser').value.trim();
+    const password = document.getElementById('loginPass').value;
     const el = document.getElementById('loginMsg');
-    if(res.ok){ location.href = 'index.html'; }
-    else { el.className = 'form-msg err'; el.textContent = res.msg; }
+
+    try {
+      const res = await Auth.login(username, password);
+      if (res.ok) {
+        location.href = 'index.html';
+      } else {
+        el.className = 'form-msg err';
+        el.textContent = res.msg || 'Ошибка входа';
+      }
+    } catch (err) {
+      el.className = 'form-msg err';
+      el.textContent = 'Ошибка соединения с сервером';
+    }
   });
 
-  document.getElementById('registerForm').addEventListener('submit', e=>{
+  document.getElementById('registerForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const res = await Auth.register(
-      document.getElementById('regUser').value.trim(),
-      document.getElementById('regPass').value,
-      document.getElementById('regIgn').value.trim()
-    );
+    const username = document.getElementById('regUser').value.trim();
+    const password = document.getElementById('regPass').value;
+    const ign = document.getElementById('regIgn').value.trim();
     const el = document.getElementById('registerMsg');
-    if(res.ok){ location.href = 'index.html'; }
-    else { el.className = 'form-msg err'; el.textContent = res.msg; }
+
+    try {
+      const res = await Auth.register(username, password, ign);
+      if (res.ok) {
+        location.href = 'index.html';
+      } else {
+        el.className = 'form-msg err';
+        el.textContent = res.msg || 'Ошибка регистрации';
+      }
+    } catch (err) {
+      el.className = 'form-msg err';
+      el.textContent = 'Ошибка соединения с сервером';
+    }
   });
 </script>
 </body>
