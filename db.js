@@ -5,94 +5,145 @@ const DB = {
   async getNews() {
     try {
       const res = await fetch(`${API_URL}/news`);
+      if (!res.ok) throw new Error('Ошибка загрузки новостей');
       return await res.json();
-    } catch (e) { return []; }
+    } catch (e) {
+      console.error('getNews error:', e);
+      return [];
+    }
   },
   
   async addNews(title, text) {
     try {
-      await fetch(`${API_URL}/news`, {
+      const res = await fetch(`${API_URL}/news`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, text })
       });
-    } catch (e) { console.error(e); }
+      if (!res.ok) throw new Error('Ошибка добавления новости');
+      return await res.json();
+    } catch (e) {
+      console.error('addNews error:', e);
+      return { ok: false };
+    }
   },
   
   async deleteNews(id) {
     try {
-      await fetch(`${API_URL}/news/${id}`, { method: 'DELETE' });
-    } catch (e) { console.error(e); }
+      const res = await fetch(`${API_URL}/news/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Ошибка удаления новости');
+      return await res.json();
+    } catch (e) {
+      console.error('deleteNews error:', e);
+      return { ok: false };
+    }
   },
 
   // === МОДЫ ===
   async getMods() {
     try {
       const res = await fetch(`${API_URL}/mods`);
+      if (!res.ok) throw new Error('Ошибка загрузки модов');
       return await res.json();
-    } catch (e) { return []; }
+    } catch (e) {
+      console.error('getMods error:', e);
+      return [];
+    }
   },
   
   async addMod(name, why) {
     try {
-      await fetch(`${API_URL}/mods`, {
+      const res = await fetch(`${API_URL}/mods`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, why })
       });
-    } catch (e) { console.error(e); }
+      if (!res.ok) throw new Error('Ошибка добавления мода');
+      return await res.json();
+    } catch (e) {
+      console.error('addMod error:', e);
+      return { ok: false };
+    }
   },
   
   async deleteMod(id) {
     try {
-      await fetch(`${API_URL}/mods/${id}`, { method: 'DELETE' });
-    } catch (e) { console.error(e); }
+      const res = await fetch(`${API_URL}/mods/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Ошибка удаления мода');
+      return await res.json();
+    } catch (e) {
+      console.error('deleteMod error:', e);
+      return { ok: false };
+    }
   },
 
   // === АПЕЛЛЯЦИИ ===
   async getAppeals() {
     try {
       const res = await fetch(`${API_URL}/appeals`);
+      if (!res.ok) throw new Error('Ошибка загрузки апелляций');
       return await res.json();
-    } catch (e) { return []; }
+    } catch (e) {
+      console.error('getAppeals error:', e);
+      return [];
+    }
   },
   
   async addAppeal(data) {
     try {
-      await fetch(`${API_URL}/appeals`, {
+      const res = await fetch(`${API_URL}/appeals`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-    } catch (e) { console.error(e); }
+      if (!res.ok) throw new Error('Ошибка отправки апелляции');
+      return await res.json();
+    } catch (e) {
+      console.error('addAppeal error:', e);
+      return { ok: false };
+    }
   },
   
   async setAppealStatus(id, status) {
     try {
-      await fetch(`${API_URL}/appeals/${id}`, {
+      const res = await fetch(`${API_URL}/appeals/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })
       });
-    } catch (e) { console.error(e); }
+      if (!res.ok) throw new Error('Ошибка изменения статуса');
+      return await res.json();
+    } catch (e) {
+      console.error('setAppealStatus error:', e);
+      return { ok: false };
+    }
   },
 
   // === ПОЛЬЗОВАТЕЛИ ===
   async getUsers() {
     try {
       const res = await fetch(`${API_URL}/users`);
+      if (!res.ok) throw new Error('Ошибка загрузки пользователей');
       return await res.json();
-    } catch (e) { return []; }
+    } catch (e) {
+      console.error('getUsers error:', e);
+      return [];
+    }
   },
   
   async toggleBan(username, banned) {
     try {
-      await fetch(`${API_URL}/users/${username}/ban`, {
+      const res = await fetch(`${API_URL}/users/${username}/ban`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ banned })
       });
-    } catch (e) { console.error(e); }
+      if (!res.ok) throw new Error('Ошибка бана пользователя');
+      return await res.json();
+    } catch (e) {
+      console.error('toggleBan error:', e);
+      return { ok: false };
+    }
   }
 };
 
@@ -124,16 +175,17 @@ const Auth = {
       }
       return { ok: false, msg: data.msg };
     } catch (e) {
+      console.error('login error:', e);
       return { ok: false, msg: 'Ошибка соединения с сервером' };
     }
   },
   
-  async register(username, email, password, ign) {
+  async register(username, password, ign) {
     try {
       const res = await fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password, ign })
+        body: JSON.stringify({ username, password, ign })
       });
       const data = await res.json();
       if (data.ok) {
@@ -142,6 +194,7 @@ const Auth = {
       }
       return { ok: false, msg: data.msg };
     } catch (e) {
+      console.error('register error:', e);
       return { ok: false, msg: 'Ошибка соединения с сервером' };
     }
   },
