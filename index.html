@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>REALLYANARCHY — Minecraft Anarchy сервер</title>
 <link rel="stylesheet" href="style.css">
+<link rel="icon" href="reallyanarchy.png" type="image/png">
 </head>
 <body>
 <div id="nav-root"></div>
@@ -13,6 +14,7 @@
   <section class="hero">
     <div class="wrap">
       <div class="console" id="bootLog" aria-label="Лог загрузки сервера"></div>
+      
       <h1 class="hero-title">REALLY<span>ANARCHY</span></h1>
       <p class="hero-sub">Ванильная анархия без телепортов, кланов и защиты территории. Один мир, все против всех — выживай, строй, отжимай базы. Правила есть, но их немного.</p>
       <div class="hero-actions">
@@ -79,7 +81,7 @@
     delay += 260;
   });
 
-  // ===== НОВОСТИ — ИСПРАВЛЕННЫЙ КОД =====
+  // news feed
   const grid = document.getElementById('newsGrid');
 
   async function loadNews() {
