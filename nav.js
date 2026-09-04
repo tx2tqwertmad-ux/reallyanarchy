@@ -21,7 +21,9 @@ function renderNav(activePage) {
   let rightHtml;
   if (user) {
     rightHtml = `
-      <span class="dim" style="font-size:13px;">${escapeHtml(user.username)}${user.role==='admin' ? ' <span class="badge admin">admin</span>' : ''}</span>
+      <a href="profile.html" style="color:var(--text);font-size:13px;text-decoration:none;display:flex;align-items:center;gap:8px;">
+        ${escapeHtml(user.username)}${user.role==='admin' ? ' <span class="badge admin">admin</span>' : ''}
+      </a>
       ${user.role==='admin' ? '<a href="admin.html" class="btn small">Админ-панель</a>' : ''}
       <button class="btn small" id="logoutBtn">Выйти</button>
     `;
