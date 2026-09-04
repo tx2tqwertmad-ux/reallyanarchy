@@ -59,10 +59,26 @@ async function createTables() {
         created_at TIMESTAMP DEFAULT NOW()
       );
       
-      CREATE TABLE IF NOT EXISTS forum_data (
-        id INTEGER PRIMARY KEY DEFAULT 1,
-        data JSONB NOT NULL,
-        updated_at TIMESTAMP DEFAULT NOW()
+      -- ТАБЛИЦЫ ДЛЯ ФОРУМА
+      CREATE TABLE IF NOT EXISTS forum_topics (
+        id SERIAL PRIMARY KEY,
+        section_key TEXT NOT NULL,
+        subforum_key TEXT NOT NULL,
+        title TEXT NOT NULL,
+        author TEXT NOT NULL,
+        replies INTEGER DEFAULT 0,
+        last TEXT,
+        views INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+      
+      CREATE TABLE IF NOT EXISTS forum_messages (
+        id SERIAL PRIMARY KEY,
+        topic_id INTEGER NOT NULL,
+        author TEXT NOT NULL,
+        text TEXT NOT NULL,
+        time TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
       );
     `);
     console.log('✅ Таблицы созданы');
@@ -91,75 +107,9 @@ async function createAdmin() {
   }
 }
 
-// === СОЗДАНИЕ ДЕФОЛТНЫХ ДАННЫХ ДЛЯ ФОРУМА ===
-async function createDefaultForum() {
-  try {
-    const result = await pool.query('SELECT * FROM forum_data WHERE id = 1');
-    if (result.rows.length === 0) {
-      const defaultData = {
-        categories: {
-          info: { 
-            name: 'Информация для игроков', 
-            open: true, 
-            topics: [
-              { id: 1, title: 'Правила проекта', author: 'admin', replies: 2, last: '12.06.2026', views: 45 },
-              { id: 2, title: 'Администрация проекта', author: 'admin', replies: 1, last: '11.06.2026', views: 30 },
-              { id: 3, title: 'Список запрещённых модификаций', author: 'admin', replies: 2, last: '10.06.2026', views: 28 }
-            ]
-          },
-          tech: { 
-            name: 'Технический раздел', 
-            open: true, 
-            topics: [
-              { id: 4, title: 'Ваши идеи и предложения', author: 'admin', replies: 54, last: '09.06.2026', views: 129 },
-              { id: 5, title: 'Баги', author: 'admin', replies: 33, last: '08.06.2026', views: 71 }
-            ]
-          },
-          complaints: { 
-            name: 'Жалобы и апелляции', 
-            open: true, 
-            topics: [
-              { id: 6, title: 'Жалобы на игроков', author: 'admin', replies: 119, last: '07.06.2026', views: 364 },
-              { id: 7, title: 'Жалобы на модерацию', author: 'admin', replies: 35, last: '06.06.2026', views: 125 },
-              { id: 8, title: 'Апелляции', author: 'admin', replies: 287, last: '05.06.2026', views: 956 }
-            ]
-          },
-          chat: { 
-            name: 'Общение', 
-            open: true, 
-            topics: [
-              { id: 9, title: 'Оффтоп', author: 'admin', replies: 10, last: '04.06.2026', views: 4 },
-              { id: 10, title: 'Координаты базы', author: 'admin', replies: 3, last: '03.06.2026', views: 1 },
-              { id: 11, title: 'Поиск тимейта', author: 'admin', replies: 3, last: '02.06.2026', views: 1 },
-              { id: 12, title: 'Постройки', author: 'admin', replies: 14, last: '01.06.2026', views: 4 }
-            ]
-          }
-        },
-        messages: {
-          1: [{ author: 'admin', text: 'Добро пожаловать на сервер! Ознакомьтесь с правилами.', time: '12.06.2026' }],
-          2: [{ author: 'admin', text: 'Состав администрации проекта.', time: '11.06.2026' }],
-          3: [{ author: 'admin', text: 'Список запрещённых модов обновлён.', time: '10.06.2026' }],
-          6: [{ author: 'admin', text: 'Жалоба на игрока X рассматривается.', time: '07.06.2026' }],
-          8: [{ author: 'admin', text: 'Апелляция — To4no_Ne_Golem', time: '05.06.2026' }]
-        },
-        online: ['tufhj']
-      };
-      await pool.query('INSERT INTO forum_data (id, data) VALUES (1, $1)', [JSON.stringify(defaultData)]);
-      console.log('✅ Дефолтные данные форума созданы');
-    } else {
-      console.log('✅ Данные форума уже существуют');
-    }
-  } catch (err) {
-    console.error('❌ Ошибка создания данных форума:', err);
-  }
-}
-
-// === ЗАПУСК СОЗДАНИЯ ===
 createTables();
 createAdmin();
-createDefaultForum();
 
-// === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
 function todayStr() {
   return new Date().toLocaleDateString('ru-RU', { 
     day: '2-digit', 
@@ -167,8 +117,6 @@ function todayStr() {
     year: 'numeric' 
   });
 }
-
-// ==================== API ====================
 
 // === РЕГИСТРАЦИЯ ===
 app.post('/api/register', async (req, res) => {
@@ -340,40 +288,92 @@ app.put('/api/users/:username/ban', async (req, res) => {
   }
 });
 
-// === ФОРУМ ===
-app.get('/api/forum', async (req, res) => {
+// ============================================================
+// === ФОРУМ — API ===
+// ============================================================
+
+// === ПОЛУЧИТЬ ВСЕ ТЕМЫ ДЛЯ РАЗДЕЛА ===
+app.get('/api/forum/topics/:sectionKey/:subforumKey', async (req, res) => {
+  const { sectionKey, subforumKey } = req.params;
   try {
-    const result = await pool.query('SELECT data FROM forum_data WHERE id = 1');
-    if (result.rows.length === 0) {
-      const defaultData = {
-        categories: {
-          info: { name: 'Информация для игроков', open: true, topics: [] },
-          tech: { name: 'Технический раздел', open: true, topics: [] },
-          complaints: { name: 'Жалобы и апелляции', open: true, topics: [] },
-          chat: { name: 'Общение', open: true, topics: [] }
-        },
-        messages: {},
-        online: []
-      };
-      await pool.query('INSERT INTO forum_data (id, data) VALUES (1, $1)', [JSON.stringify(defaultData)]);
-      res.json(defaultData);
-    } else {
-      res.json(JSON.parse(result.rows[0].data));
-    }
+    const result = await pool.query(
+      'SELECT * FROM forum_topics WHERE section_key = $1 AND subforum_key = $2 ORDER BY created_at DESC',
+      [sectionKey, subforumKey]
+    );
+    res.json(result.rows);
   } catch (err) {
-    console.error('Ошибка загрузки форума:', err);
-    res.status(500).json({ error: 'Ошибка сервера' });
+    console.error(err);
+    res.json([]);
   }
 });
 
-app.post('/api/forum', async (req, res) => {
+// === СОЗДАТЬ ТЕМУ ===
+app.post('/api/forum/topics', async (req, res) => {
+  const { sectionKey, subforumKey, title, author, text } = req.body;
   try {
-    const { data } = req.body;
-    await pool.query('UPDATE forum_data SET data = $1, updated_at = NOW() WHERE id = 1', [JSON.stringify(data)]);
+    const now = new Date().toLocaleDateString('ru-RU');
+    const result = await pool.query(
+      'INSERT INTO forum_topics (section_key, subforum_key, title, author, last) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+      [sectionKey, subforumKey, title, author, now]
+    );
+    const topicId = result.rows[0].id;
+    await pool.query(
+      'INSERT INTO forum_messages (topic_id, author, text, time) VALUES ($1, $2, $3, $4)',
+      [topicId, author, text, now]
+    );
+    res.json({ ok: true, id: topicId });
+  } catch (err) {
+    console.error(err);
+    res.json({ ok: false, msg: 'Ошибка создания темы' });
+  }
+});
+
+// === ПОЛУЧИТЬ СООБЩЕНИЯ ТЕМЫ ===
+app.get('/api/forum/messages/:topicId', async (req, res) => {
+  const { topicId } = req.params;
+  try {
+    const result = await pool.query(
+      'SELECT * FROM forum_messages WHERE topic_id = $1 ORDER BY created_at',
+      [topicId]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.json([]);
+  }
+});
+
+// === ДОБАВИТЬ СООБЩЕНИЕ В ТЕМУ ===
+app.post('/api/forum/messages', async (req, res) => {
+  const { topicId, author, text, time } = req.body;
+  try {
+    await pool.query(
+      'INSERT INTO forum_messages (topic_id, author, text, time) VALUES ($1, $2, $3, $4)',
+      [topicId, author, text, time]
+    );
+    await pool.query(
+      'UPDATE forum_topics SET replies = replies + 1, last = $1 WHERE id = $2',
+      [time.split(' ')[0], topicId]
+    );
     res.json({ ok: true });
   } catch (err) {
-    console.error('Ошибка сохранения форума:', err);
-    res.status(500).json({ error: 'Ошибка сервера' });
+    console.error(err);
+    res.json({ ok: false });
+  }
+});
+
+// === ПОЛУЧИТЬ СТАТИСТИКУ ФОРУМА ===
+app.get('/api/forum/stats', async (req, res) => {
+  try {
+    const topics = await pool.query('SELECT COUNT(*) FROM forum_topics');
+    const messages = await pool.query('SELECT COUNT(*) FROM forum_messages');
+    const users = await pool.query('SELECT COUNT(*) FROM users');
+    res.json({
+      topics: parseInt(topics.rows[0].count),
+      messages: parseInt(messages.rows[0].count),
+      users: parseInt(users.rows[0].count)
+    });
+  } catch (err) {
+    res.json({ topics: 0, messages: 0, users: 0 });
   }
 });
 
@@ -385,6 +385,7 @@ app.get('/appeal.html', (req, res) => res.sendFile(path.join(__dirname, 'appeal.
 app.get('/auth.html', (req, res) => res.sendFile(path.join(__dirname, 'auth.html')));
 app.get('/admin.html', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
 app.get('/shop.html', (req, res) => res.sendFile(path.join(__dirname, 'shop.html')));
+app.get('/profile.html', (req, res) => res.sendFile(path.join(__dirname, 'profile.html')));
 app.get('/forum.html', (req, res) => res.sendFile(path.join(__dirname, 'forum.html')));
 
 app.listen(PORT, () => {
