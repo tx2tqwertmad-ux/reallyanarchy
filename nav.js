@@ -8,7 +8,8 @@ function renderNav(activePage) {
     ['rules.html','Правила'],
     ['mods.html','Моды'],
     ['appeal.html','Апелляция'],
-    [SHOP_URL,'Магазин', true], // true = внешняя ссылка
+    ['forum.html','Форум'],
+    [SHOP_URL,'Магазин', true],
   ];
 
   const linksHtml = linksLeft.map(([href,label,external]) =>
