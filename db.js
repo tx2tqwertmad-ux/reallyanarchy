@@ -1,5 +1,3 @@
-// db.js — клиентская часть для работы с сервером
-
 const API_URL = window.location.origin + '/api';
 
 const DB = {
@@ -98,7 +96,6 @@ const DB = {
   }
 };
 
-// === АВТОРИЗАЦИЯ ===
 const Auth = {
   getToken() {
     return localStorage.getItem('ra_token');
@@ -138,24 +135,12 @@ const Auth = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password, ign })
       });
-      return await res.json();
-    } catch (e) {
-      return { ok: false, msg: 'Ошибка соединения с сервером' };
-    }
-  },
-  
-  async verify(email, code) {
-    try {
-      const res = await fetch(`${API_URL}/verify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, code })
-      });
       const data = await res.json();
       if (data.ok) {
         localStorage.setItem('ra_token', data.token);
+        return { ok: true, user: data.user };
       }
-      return data;
+      return { ok: false, msg: data.msg };
     } catch (e) {
       return { ok: false, msg: 'Ошибка соединения с сервером' };
     }
