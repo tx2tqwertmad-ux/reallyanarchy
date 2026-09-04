@@ -8,11 +8,13 @@ function renderNav(activePage) {
     ['rules.html','Правила'],
     ['mods.html','Моды'],
     ['appeal.html','Апелляция'],
-    ['shop.html','Магазин'],
+    [SHOP_URL,'Магазин', true], // true = внешняя ссылка
   ];
 
-  const linksHtml = linksLeft.map(([href,label])=>
-    `<a href="${href}"${activePage===href?' class="active"':''}>${label}</a>`
+  const linksHtml = linksLeft.map(([href,label,external]) =>
+    external
+      ? `<a href="${href}" target="_blank" rel="noopener">${label}</a>`
+      : `<a href="${href}"${activePage===href?' class="active"':''}>${label}</a>`
   ).join('');
 
   let rightHtml;
