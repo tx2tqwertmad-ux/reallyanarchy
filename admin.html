@@ -5,98 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Админ-панель — REALLYANARCHY</title>
 <link rel="stylesheet" href="style.css">
-<style>
-  .analytics-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  .analytics-card {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    text-align: center;
-    transition: all 0.3s ease;
-  }
-  .analytics-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--lime);
-    box-shadow: 0 8px 25px rgba(247, 183, 51, 0.15);
-  }
-  .analytics-card .num {
-    font-family: var(--font-display);
-    font-size: 32px;
-    color: var(--lime);
-  }
-  .analytics-card .lbl {
-    display: block;
-    font-size: 11px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    margin-top: 6px;
-  }
-  .analytics-card .change {
-    display: inline-block;
-    font-size: 12px;
-    margin-top: 8px;
-    padding: 2px 10px;
-    border-radius: 20px;
-  }
-  .change.up { color: #00ff96; background: rgba(0, 255, 150, 0.1); }
-  .change.down { color: #ff4757; background: rgba(255, 71, 87, 0.1); }
-
-  .chart-container {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
-    margin-top: 16px;
-  }
-  .chart-bars {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-around;
-    height: 200px;
-    gap: 8px;
-    padding: 10px 0;
-  }
-  .chart-bar {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-    max-width: 50px;
-  }
-  .chart-bar .bar {
-    width: 100%;
-    background: linear-gradient(180deg, #f7b733, #f5a623);
-    border-radius: 4px 4px 0 0;
-    min-height: 8px;
-    transition: height 0.8s ease;
-    position: relative;
-  }
-  .chart-bar .bar:hover {
-    opacity: 0.8;
-    transform: scaleX(1.1);
-  }
-  .chart-bar .val {
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 6px;
-  }
-  .chart-bar .label {
-    font-size: 10px;
-    color: var(--text-dim);
-    margin-top: 4px;
-  }
-
-  @media (max-width: 720px) {
-    .analytics-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-</style>
 </head>
 <body>
 <div id="nav-root"></div>
@@ -110,7 +18,7 @@
         <button data-tab="appeals">Апелляции</button>
         <button data-tab="players">Игроки</button>
         <button data-tab="mods">Моды</button>
-        <button data-tab="analytics" style="color: var(--lime);">📊 Аналитика</button>
+        <button data-tab="analytics">Аналитика</button>
       </aside>
 
       <div class="admin-panel">
@@ -163,39 +71,23 @@
           <div id="modsAdminList"></div>
         </div>
 
-        <!-- ===== НОВАЯ АНАЛИТИКА ===== -->
+        <!-- АНАЛИТИКА (без смайликов, без рандома) -->
         <div class="tab-panel" id="panel-analytics">
-          <h2>📊 Аналитика сайта</h2>
+          <h2>Аналитика сайта</h2>
 
-          <div class="analytics-grid">
-            <div class="analytics-card">
-              <div class="num" id="analyticsToday" style="color: #00c8ff;">0</div>
-              <span class="lbl">👤 Посещений сегодня</span>
-              <span class="change up" id="analyticsTodayChange">+0%</span>
-            </div>
-            <div class="analytics-card">
-              <div class="num" id="analyticsRecord" style="color: #f7b733;">0</div>
-              <span class="lbl">🏆 Рекорд посещений</span>
-              <span class="change up" id="analyticsRecordChange">+0%</span>
-            </div>
-            <div class="analytics-card">
-              <div class="num" id="analyticsOnline" style="color: #00ff96;">0</div>
-              <span class="lbl">🟢 Онлайн сейчас</span>
-              <span class="change up" id="analyticsOnlineChange">+0%</span>
-            </div>
-            <div class="analytics-card">
-              <div class="num" id="analyticsTotal" style="color: #ff6b6b;">0</div>
-              <span class="lbl">📊 Всего посещений</span>
-              <span class="change up" id="analyticsTotalChange">+0%</span>
-            </div>
+          <div class="stats-row">
+            <div class="card stat"><span class="num" id="analyticsToday">0</span><span class="lbl">Посещений сегодня</span></div>
+            <div class="card stat"><span class="num" id="analyticsRecord">0</span><span class="lbl">Рекорд посещений</span></div>
+            <div class="card stat"><span class="num" id="analyticsOnline">0</span><span class="lbl">Онлайн сейчас</span></div>
+            <div class="card stat"><span class="num" id="analyticsTotal">0</span><span class="lbl">Всего посещений</span></div>
           </div>
 
-          <div class="chart-container">
-            <h3 style="margin: 0 0 16px 0; font-size: 14px;">📈 Активность за последние 7 дней</h3>
-            <div class="chart-bars" id="analyticsChart"></div>
+          <div class="card" style="margin-top:16px;">
+            <h3 style="font-size:14px; margin-bottom:16px;">Активность за последние 7 дней</h3>
+            <div id="analyticsChart" style="display:flex; align-items:flex-end; justify-content:space-around; height:180px; gap:8px; padding:10px 0;"></div>
           </div>
 
-          <p class="dim" style="margin-top: 12px; font-size: 12px; text-align: center;">* Данные обновляются при каждом посещении сайта</p>
+          <p class="dim" style="margin-top:12px; font-size:12px;">* Данные обновляются при каждом посещении сайта</p>
         </div>
 
       </div>
@@ -401,44 +293,25 @@
     await refreshAll();
   });
 
-  // === АНАЛИТИКА (красивая) ===
+  // === АНАЛИТИКА (реальные данные, без рандома) ===
   async function renderAnalytics() {
     try {
       const today = new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
       const visits = JSON.parse(localStorage.getItem('ra_visits') || '[]');
       
-      // Данные за сегодня
       const todayVisits = visits.filter(v => v.date === today);
       const todayCount = todayVisits.length || 0;
-      
-      // Рекорд
       const record = visits.reduce((max, v) => Math.max(max, v.count || 0), 0);
-      
-      // Всего
       const total = visits.reduce((sum, v) => sum + (v.count || 0), 0);
       
-      // Онлайн (симуляция)
-      const online = Math.floor(Math.random() * 25) + 2;
-
-      // Процентные изменения (для красоты)
-      const getChange = (current, prev) => {
-        if (prev === 0) return '+100%';
-        const change = Math.round(((current - prev) / prev) * 100);
-        return change >= 0 ? `+${change}%` : `${change}%`;
-      };
-
-      const prevDay = visits.filter(v => v.date !== today).slice(-1)[0];
-      const prevCount = prevDay ? prevDay.count || 0 : 0;
+      // Реальный онлайн — количество активных сессий (из localStorage)
+      const sessions = JSON.parse(localStorage.getItem('ra_sessions') || '[]');
+      const online = sessions.length || 0;
 
       document.getElementById('analyticsToday').textContent = todayCount;
       document.getElementById('analyticsRecord').textContent = record;
       document.getElementById('analyticsOnline').textContent = online;
       document.getElementById('analyticsTotal').textContent = total;
-
-      document.getElementById('analyticsTodayChange').textContent = getChange(todayCount, prevCount);
-      document.getElementById('analyticsRecordChange').textContent = '+0%';
-      document.getElementById('analyticsOnlineChange').textContent = '+0%';
-      document.getElementById('analyticsTotalChange').textContent = '+0%';
 
       // График за 7 дней
       const chart = document.getElementById('analyticsChart');
@@ -448,18 +321,18 @@
         d.setDate(d.getDate() - i);
         const dateStr = d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
         const dayData = visits.filter(v => v.date === dateStr);
-        const count = dayData.length || Math.floor(Math.random() * 12) + 1;
+        const count = dayData.length || 0;
         last7Days.push({ date: dateStr, count });
       }
 
       const maxCount = Math.max(...last7Days.map(d => d.count), 1);
       chart.innerHTML = last7Days.map(d => {
-        const height = Math.max((d.count / maxCount) * 180, 10);
+        const height = Math.max((d.count / maxCount) * 160, 10);
         return `
-          <div class="chart-bar">
-            <div class="bar" style="height: ${height}px;"></div>
-            <span class="val">${d.count}</span>
-            <span class="label">${d.date}</span>
+          <div style="display:flex; flex-direction:column; align-items:center; flex:1; max-width:50px;">
+            <div style="width:100%; background:var(--lime); height:${height}px; border-radius:3px 3px 0 0; min-height:8px; transition:height 0.3s;"></div>
+            <span style="font-size:11px; color:var(--text-dim); margin-top:4px;">${d.count}</span>
+            <span style="font-size:10px; color:var(--text-dim);">${d.date}</span>
           </div>
         `;
       }).join('');
@@ -472,6 +345,15 @@
         visits.push({ date: today, count: 1 });
       }
       localStorage.setItem('ra_visits', JSON.stringify(visits));
+
+      // Сохраняем сессию (онлайн)
+      const sessionId = sessionStorage.getItem('ra_session_id');
+      if (!sessionId) {
+        const newId = Math.random().toString(36).slice(2, 10);
+        sessionStorage.setItem('ra_session_id', newId);
+        sessions.push({ id: newId, time: Date.now() });
+        localStorage.setItem('ra_sessions', JSON.stringify(sessions));
+      }
 
     } catch (error) {
       console.error('Ошибка загрузки аналитики:', error);
