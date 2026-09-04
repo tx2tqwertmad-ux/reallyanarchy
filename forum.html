@@ -123,7 +123,6 @@
   .subforum-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px;flex-wrap:wrap;}
   .subforum-head h2{font-family:var(--font-display);font-size:17px;margin:0;}
 
-  /* ФИЛЬТРЫ */
   .filter-bar {
     display: flex;
     flex-wrap: wrap;
@@ -178,7 +177,6 @@
     background: rgba(0,0,0,0.15);
   }
 
-  /* ПАГИНАЦИЯ */
   .pagination {
     display: flex;
     justify-content: center;
@@ -241,6 +239,7 @@
 
   .post-item{display:grid;grid-template-columns:76px 1fr;gap:16px;background:var(--bg-panel);border:1px solid var(--border);margin-bottom:10px;}
   .post-item .post-side{background:var(--bg-inset);padding:16px 10px;text-align:center;border-right:1px solid var(--border-lo);}
+  .post-avatar-img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--border-lo);margin:0 auto 8px;}
   .post-avatar{width:44px;height:44px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:14px;color:#141400;border-radius:50%;}
   .post-side .post-author{color:var(--text);font-weight:800;font-size:12px;word-break:break-word;}
   .post-side .post-num{color:var(--text-dim);font-size:10px;margin-top:6px;}
@@ -344,7 +343,6 @@
       <button class="btn primary" id="subforumCreateBtn">+ Создать тему</button>
     </div>
 
-    <!-- ФИЛЬТРЫ -->
     <div class="filter-bar" id="filterBar">
       <span class="filter-label">Фильтры ▼</span>
       <div class="filter-group">
@@ -357,7 +355,6 @@
 
     <div id="subforumTopicsList"></div>
 
-    <!-- ПАГИНАЦИЯ -->
     <div class="pagination" id="pagination"></div>
   </div>
 
@@ -497,6 +494,18 @@
     let h = 0;
     for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
     return AVATAR_COLORS[h % AVATAR_COLORS.length];
+  }
+
+  function getUserAvatar(username) {
+    try {
+      const raw = localStorage.getItem('ra_profile_data');
+      if (!raw) return null;
+      const all = JSON.parse(raw);
+      if (all[username] && all[username].avatar) {
+        return all[username].avatar;
+      }
+      return null;
+    } catch(e) { return null; }
   }
 
   let forumData = getForumData();
@@ -664,7 +673,6 @@
     document.getElementById('onlineTotal').textContent = `Всего: ${displayUsers.length} пользователей`;
   }
 
-  // ===== ФИЛЬТРЫ И ПАГИНАЦИЯ =====
   const FILTER_KEY = 'ra_forum_filter';
   let currentFilter = localStorage.getItem(FILTER_KEY) || 'all';
   const ITEMS_PER_PAGE = 10;
@@ -757,7 +765,6 @@
     });
   }
 
-  // ===== ОТКРЫТИЕ ПОДФОРУМА =====
   window.openSubforum = function(sectionKey, subforumKey){
     const found = findSubforum(sectionKey, subforumKey);
     if (!found) return;
@@ -785,7 +792,6 @@
 
     document.getElementById('crumbForumFromSub').addEventListener('click', showSections);
 
-    // Обновляем фильтры
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.filter === currentFilter);
     });
@@ -794,7 +800,6 @@
     renderTopicsWithPagination(sorted, 1, subforum);
   };
 
-  // Фильтры
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -808,7 +813,6 @@
     });
   });
 
-  // ===== СОЗДАНИЕ ТЕМЫ =====
   function openCreateForm(sectionKey, subforumKey){
     const found = findSubforum(sectionKey, subforumKey);
     if (!found) return;
@@ -906,7 +910,6 @@
     });
   }
 
-  // ===== СТРАНИЦА ТЕМЫ =====
   function renderReplyBlock(topicId){
     const user = Auth.currentUser();
     const block = document.getElementById('replyBlock');
@@ -983,10 +986,14 @@
       ? '<div class="empty-row">Пока нет сообщений в этой теме</div>'
       : messages.map((msg, i) => {
           const author = msg.author || 'Гость';
+          const avatar = getUserAvatar(author);
           return `
             <div class="post-item">
               <div class="post-side">
-                <div class="post-avatar" style="background:${avatarColor(author)};">${escapeHtml(author.slice(0,1).toUpperCase())}</div>
+                ${avatar 
+                  ? `<img src="${avatar}" class="post-avatar-img" alt="${escapeHtml(author)}">`
+                  : `<div class="post-avatar" style="background:${avatarColor(author)};">${escapeHtml(author.slice(0,1).toUpperCase())}</div>`
+                }
                 <div class="post-author">${escapeHtml(author)}</div>
                 <div class="post-num">#${i + 1}</div>
               </div>
