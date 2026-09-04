@@ -3,24 +3,19 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
 const path = require('path');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// Подключение к базе данных
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: { rejectUnauthorized: false }
 });
 
 // === СОЗДАНИЕ ТАБЛИЦ ===
@@ -35,7 +30,7 @@ async function createTables() {
         ign TEXT,
         role TEXT DEFAULT 'user',
         banned BOOLEAN DEFAULT FALSE,
-        verified BOOLEAN DEFAULT FALSE,
+        verified BOOLEAN DEFAULT TRUE,
         created_at TIMESTAMP DEFAULT NOW()
       );
       
@@ -63,12 +58,6 @@ async function createTables() {
         why TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       );
-      
-      CREATE TABLE IF NOT EXISTS verification_codes (
-        email TEXT PRIMARY KEY,
-        code TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT NOW()
-      );
     `);
     console.log('✅ Таблицы созданы');
   } catch (err) {
@@ -78,21 +67,6 @@ async function createTables() {
 
 createTables();
 
-// === НАСТРОЙКА ПОЧТЫ ===
-const transporter = nodemailer.createTransport({
-  host: 'smtp-mail.outlook.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
-function generateCode() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
 function todayStr() {
   return new Date().toLocaleDateString('ru-RU', { 
     day: '2-digit', 
@@ -101,7 +75,7 @@ function todayStr() {
   });
 }
 
-// === РЕГИСТРАЦИЯ ===
+// === РЕГИСТРАЦИЯ (без почты) ===
 app.post('/api/register', async (req, res) => {
   const { username, email, password, ign } = req.body;
   try {
@@ -113,46 +87,10 @@ app.post('/api/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     await pool.query(
       'INSERT INTO users (username, email, password, ign, verified) VALUES ($1, $2, $3, $4, $5)',
-      [username, email, hashedPassword, ign || username, false]
+      [username, email, hashedPassword, ign || username, true]
     );
 
-    const code = generateCode();
-    await pool.query(
-      'INSERT INTO verification_codes (email, code) VALUES ($1, $2) ON CONFLICT (email) DO UPDATE SET code = $2, created_at = NOW()',
-      [email, code]
-    );
-    
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-      await transporter.sendMail({
-        from: `"REALLYANARCHY" <${process.env.EMAIL_USER}>`,
-        to: email,
-        subject: 'Подтверждение регистрации',
-        html: `<h2>Ваш код: <b>${code}</b></h2>`
-      });
-    }
-
-    res.json({ ok: true, msg: 'Код отправлен на почту' });
-  } catch (err) {
-    console.error(err);
-    res.json({ ok: false, msg: 'Ошибка сервера' });
-  }
-});
-
-// === ПОДТВЕРЖДЕНИЕ ПОЧТЫ ===
-app.post('/api/verify', async (req, res) => {
-  const { email, code } = req.body;
-  try {
-    const result = await pool.query(
-      'SELECT * FROM verification_codes WHERE email = $1 AND code = $2 AND created_at > NOW() - INTERVAL \'10 minutes\'',
-      [email, code]
-    );
-    if (result.rows.length === 0) {
-      return res.json({ ok: false, msg: 'Неверный код' });
-    }
-    await pool.query('UPDATE users SET verified = TRUE WHERE email = $1', [email]);
-    await pool.query('DELETE FROM verification_codes WHERE email = $1', [email]);
-    
-    const user = await pool.query('SELECT username, role, ign FROM users WHERE email = $1', [email]);
+    const user = await pool.query('SELECT username, role, ign FROM users WHERE username = $1', [username]);
     const token = jwt.sign(
       { username: user.rows[0].username, role: user.rows[0].role },
       process.env.JWT_SECRET || 'secret',
@@ -161,7 +99,8 @@ app.post('/api/verify', async (req, res) => {
     
     res.json({ ok: true, token, user: user.rows[0] });
   } catch (err) {
-    res.json({ ok: false, msg: 'Ошибка' });
+    console.error(err);
+    res.json({ ok: false, msg: 'Ошибка сервера' });
   }
 });
 
@@ -175,9 +114,6 @@ app.post('/api/login', async (req, res) => {
     }
     
     const user = result.rows[0];
-    if (!user.verified) {
-      return res.json({ ok: false, msg: 'Подтвердите email' });
-    }
     if (user.banned) {
       return res.json({ ok: false, msg: 'Аккаунт заблокирован' });
     }
