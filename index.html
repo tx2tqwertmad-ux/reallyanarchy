@@ -79,20 +79,30 @@
     delay += 260;
   });
 
-  // news feed
+  // ===== НОВОСТИ — ИСПРАВЛЕННЫЙ КОД =====
   const grid = document.getElementById('newsGrid');
-  const news = DB.getNews();
-  if(news.length === 0){
-    grid.innerHTML = '<div class="empty">Новостей пока нет.</div>';
-  } else {
-    grid.innerHTML = news.map(n => `
-      <article class="card news-card">
-        <div class="date">${n.date}</div>
-        <h3>${escapeHtml(n.title)}</h3>
-        <p>${escapeHtml(n.text)}</p>
-      </article>
-    `).join('');
+
+  async function loadNews() {
+    try {
+      const news = await DB.getNews();
+      if (news.length === 0) {
+        grid.innerHTML = '<div class="empty">Новостей пока нет.</div>';
+      } else {
+        grid.innerHTML = news.map(n => `
+          <article class="card news-card">
+            <div class="date">${n.date}</div>
+            <h3>${escapeHtml(n.title)}</h3>
+            <p>${escapeHtml(n.text)}</p>
+          </article>
+        `).join('');
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки новостей:', error);
+      grid.innerHTML = '<div class="empty">Ошибка загрузки новостей</div>';
+    }
   }
+
+  loadNews();
 </script>
 </body>
 </html>
