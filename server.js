@@ -68,16 +68,26 @@ async function createTables() {
 // === СОЗДАНИЕ АДМИНИСТРАТОРА ===
 async function createAdmin() {
   try {
+    // Проверяем, есть ли пользователь tufhj
     const result = await pool.query("SELECT * FROM users WHERE username = 'tufhj'");
+    
     if (result.rows.length === 0) {
-      const hashedPassword = await bcrypt.hash('changeme123', 10);
+      // Если нет — создаём
+      const hashedPassword = await bcrypt.hash('zazazaa123123', 10);
       await pool.query(
-        "INSERT INTO users (username, email, password, ign, role, verified) VALUES ($1, $2, $3, $4, $5, $6)",
+        `INSERT INTO users (username, email, password, ign, role, verified) 
+         VALUES ($1, $2, $3, $4, $5, $6)`,
         ['tufhj', 'admin@reallyanarchy.local', hashedPassword, 'tufhj', 'admin', true]
       );
-      console.log('✅ Администратор создан (логин: tufhj, пароль: changeme123)');
+      console.log('✅ Администратор создан: логин: tufhj, пароль: zazazaa123123');
     } else {
-      console.log('✅ Администратор уже существует');
+      // Если есть — обновляем пароль и роль (на всякий случай)
+      const hashedPassword = await bcrypt.hash('zazazaa123123', 10);
+      await pool.query(
+        "UPDATE users SET password = $1, role = 'admin', verified = true WHERE username = 'tufhj'",
+        [hashedPassword]
+      );
+      console.log('✅ Администратор обновлён: логин: tufhj, пароль: zazazaa123123');
     }
   } catch (err) {
     console.error('❌ Ошибка создания администратора:', err);
