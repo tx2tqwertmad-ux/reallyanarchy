@@ -812,7 +812,6 @@
 
     document.getElementById('crumbForumFromSub').addEventListener('click', showSections);
 
-    // Кнопка "Назад"
     document.getElementById('backFromSubforum').addEventListener('click', showSections);
 
     renderTopicsWithPagination(topics, 1);
@@ -932,7 +931,6 @@
       `;
       modal.classList.add('active');
 
-      // Добавляем кнопку загрузки фото для формы
       const composer = attachComposer(document.getElementById('cf_0'));
 
       document.getElementById('customTopicForm').addEventListener('submit', async function(e) {
@@ -983,7 +981,6 @@
     `;
     modal.classList.add('active');
 
-    // Добавляем кнопку загрузки фото
     const composer = attachComposer(document.getElementById('topicText'));
 
     document.getElementById('newTopicForm').addEventListener('submit', async function(e) {
@@ -1334,7 +1331,6 @@
 
     renderReplyBlock(topicId);
 
-    // Кнопка "Назад"
     document.getElementById('backFromTopic').addEventListener('click', () => {
       openSubforum(currentSectionKey, currentSubforumKey);
     });
