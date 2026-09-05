@@ -38,6 +38,7 @@
   a:hover{color:var(--ore);}
   ::selection{background:var(--ore);color:#141400;}
 
+  /* Переопределяем для совместимости с твоей шапкой */
   .btn{display:inline-block;background:var(--bg-raised);border:1px solid var(--border);color:var(--text);font-family:var(--font-body);font-weight:700;font-size:13px;padding:10px 16px;cursor:pointer;transition:border-color .15s, transform .05s;white-space:nowrap;}
   .btn:hover{border-color:var(--ore);}
   .btn:active{transform:translateY(1px);}
@@ -298,8 +299,6 @@
   .topic-modal-content .close-modal{float:right;background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;line-height:1;font-family:var(--font-body);}
   .topic-modal-content .close-modal:hover{color:var(--ore);}
 
-  footer.site-foot{border-top:1px solid var(--border);padding:20px 24px;text-align:center;color:var(--text-dim);font-size:12px;}
-
   @media (max-width:820px){
     .layout{grid-template-columns:1fr;}
     .subforum-row{grid-template-columns:1fr auto;}
@@ -316,7 +315,7 @@
 </head>
 <body>
 
-<!-- ШАПКА ИЗ ТВОЕГО САЙТА (ЧЕРЕЗ nav.js) -->
+<!-- ===== ТВОЯ ШАПКА (через nav.js) ===== -->
 <div id="nav-root"></div>
 
 <main>
@@ -395,6 +394,7 @@
   </div>
 </main>
 
+<!-- ===== ТВОЙ ФУТЕР (через nav.js) ===== -->
 <div id="footer-root"></div>
 
 <!-- КАРТОЧКА ПРОФИЛЯ -->
