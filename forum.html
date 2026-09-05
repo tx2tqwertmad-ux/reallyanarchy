@@ -38,7 +38,6 @@
   a:hover{color:var(--ore);}
   ::selection{background:var(--ore);color:#141400;}
 
-  /* Переопределяем для совместимости с твоей шапкой */
   .btn{display:inline-block;background:var(--bg-raised);border:1px solid var(--border);color:var(--text);font-family:var(--font-body);font-weight:700;font-size:13px;padding:10px 16px;cursor:pointer;transition:border-color .15s, transform .05s;white-space:nowrap;}
   .btn:hover{border-color:var(--ore);}
   .btn:active{transform:translateY(1px);}
@@ -423,7 +422,12 @@
 <script src="db.js"></script>
 <script src="nav.js"></script>
 <script>
-(function(){
+  // ===== РЕНДЕРИМ ШАПКУ И ФУТЕР =====
+  renderNav('forum.html');
+  renderFooter();
+
+  // ===== ОСТАЛЬНОЙ КОД =====
+  (function(){
   const API_URL = window.location.origin + '/api';
   const FORUM_KEY = 'ra_forum_v4';
 
@@ -473,7 +477,6 @@
     return div.innerHTML;
   }
 
-  // === ДАННЫЕ ФОРУМА ===
   function getDefaultForum() {
     return {
       sections: {
@@ -650,7 +653,6 @@
     }
   }
 
-  // === ОТОБРАЖЕНИЕ ===
   function hideAllViews() {
     document.getElementById('listView').style.display = 'none';
     document.getElementById('subforumView').style.display = 'none';
@@ -785,7 +787,6 @@
     document.getElementById('onlineTotal').textContent = `Всего: ${onlineUsers.length} пользователей`;
   }
 
-  // === ПОДФОРУМ ===
   async function openSubforum(sectionKey, subforumKey) {
     currentSectionKey = sectionKey;
     currentSubforumKey = subforumKey;
@@ -816,7 +817,6 @@
     createBtn.onclick = () => openCreateForm(sectionKey, subforumKey);
 
     document.getElementById('crumbForumFromSub').addEventListener('click', showSections);
-
     document.getElementById('backFromSubforum').addEventListener('click', showSections);
 
     renderTopicsWithPagination(topics, 1);
@@ -913,7 +913,6 @@
     });
   });
 
-  // === СОЗДАНИЕ ТЕМЫ ===
   function openCreateForm(sectionKey, subforumKey) {
     const modal = document.getElementById('topicModal');
     const content = document.getElementById('modalContent');
@@ -1018,7 +1017,6 @@
     });
   }
 
-  // === КОМПОЗЕР ДЛЯ ФОТО ===
   function attachComposer(textarea) {
     const toolbar = document.createElement('div');
     toolbar.className = 'composer-toolbar';
@@ -1063,7 +1061,6 @@
     };
   }
 
-  // === КАРТОЧКА ПРОФИЛЯ ===
   function computeMessageCount(username) {
     let count = 0;
     for (const arr of Object.values(forumData.messages)) {
@@ -1161,7 +1158,6 @@
     }, 0);
   };
 
-  // === СТРАНИЦА ТЕМЫ ===
   function renderReplyBlock(topicId) {
     const user = Auth.currentUser();
     const block = document.getElementById('replyBlock');
@@ -1346,7 +1342,6 @@
     document.getElementById('crumbSubforum').addEventListener('click', () => openSubforum(currentSectionKey, currentSubforumKey));
   };
 
-  // === ЗАКРЫТИЕ МОДАЛКИ ===
   document.getElementById('closeModalBtn').addEventListener('click', () => {
     document.getElementById('topicModal').classList.remove('active');
   });
@@ -1359,7 +1354,7 @@
   window.openSubforum = openSubforum;
 
   showSections();
-})();
+  })();
 </script>
 </body>
 </html>
