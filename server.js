@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 app.use(express.static(__dirname));
 
 const pool = new Pool({
@@ -59,7 +59,6 @@ async function createTables() {
         created_at TIMESTAMP DEFAULT NOW()
       );
       
-      -- ТАБЛИЦЫ ДЛЯ ФОРУМА
       CREATE TABLE IF NOT EXISTS forum_topics (
         id SERIAL PRIMARY KEY,
         section_key TEXT NOT NULL,
@@ -292,7 +291,6 @@ app.put('/api/users/:username/ban', async (req, res) => {
 // === ФОРУМ — API ===
 // ============================================================
 
-// === ПОЛУЧИТЬ ВСЕ ТЕМЫ ДЛЯ РАЗДЕЛА ===
 app.get('/api/forum/topics/:sectionKey/:subforumKey', async (req, res) => {
   const { sectionKey, subforumKey } = req.params;
   try {
@@ -307,7 +305,6 @@ app.get('/api/forum/topics/:sectionKey/:subforumKey', async (req, res) => {
   }
 });
 
-// === СОЗДАТЬ ТЕМУ ===
 app.post('/api/forum/topics', async (req, res) => {
   const { sectionKey, subforumKey, title, author, text } = req.body;
   try {
@@ -328,7 +325,6 @@ app.post('/api/forum/topics', async (req, res) => {
   }
 });
 
-// === ПОЛУЧИТЬ СООБЩЕНИЯ ТЕМЫ ===
 app.get('/api/forum/messages/:topicId', async (req, res) => {
   const { topicId } = req.params;
   try {
@@ -342,7 +338,6 @@ app.get('/api/forum/messages/:topicId', async (req, res) => {
   }
 });
 
-// === ДОБАВИТЬ СООБЩЕНИЕ В ТЕМУ ===
 app.post('/api/forum/messages', async (req, res) => {
   const { topicId, author, text, time } = req.body;
   try {
@@ -356,12 +351,11 @@ app.post('/api/forum/messages', async (req, res) => {
     );
     res.json({ ok: true });
   } catch (err) {
-    console.error(err);
-    res.json({ ok: false });
+    console.error('Ошибка добавления сообщения:', err);
+    res.json({ ok: false, error: err.message });
   }
 });
 
-// === ПОЛУЧИТЬ СТАТИСТИКУ ФОРУМА ===
 app.get('/api/forum/stats', async (req, res) => {
   try {
     const topics = await pool.query('SELECT COUNT(*) FROM forum_topics');
@@ -387,6 +381,9 @@ app.get('/admin.html', (req, res) => res.sendFile(path.join(__dirname, 'admin.ht
 app.get('/shop.html', (req, res) => res.sendFile(path.join(__dirname, 'shop.html')));
 app.get('/profile.html', (req, res) => res.sendFile(path.join(__dirname, 'profile.html')));
 app.get('/forum.html', (req, res) => res.sendFile(path.join(__dirname, 'forum.html')));
+app.get('/settings.html', (req, res) => res.sendFile(path.join(__dirname, 'settings.html')));
+app.get('/privacy.html', (req, res) => res.sendFile(path.join(__dirname, 'privacy.html')));
+app.get('/security.html', (req, res) => res.sendFile(path.join(__dirname, 'security.html')));
 
 app.listen(PORT, () => {
   console.log(`🚀 Сервер запущен на порту ${PORT}`);
