@@ -38,6 +38,7 @@
   a:hover{color:var(--ore);}
   ::selection{background:var(--ore);color:#141400;}
 
+  /* Переопределяем для совместимости с твоей шапкой */
   .btn{display:inline-block;background:var(--bg-raised);border:1px solid var(--border);color:var(--text);font-family:var(--font-body);font-weight:700;font-size:13px;padding:10px 16px;cursor:pointer;transition:border-color .15s, transform .05s;white-space:nowrap;}
   .btn:hover{border-color:var(--ore);}
   .btn:active{transform:translateY(1px);}
@@ -54,7 +55,7 @@
     color: var(--text-dim);
     font-size: 13px;
     cursor: pointer;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     transition: color 0.2s;
     background: none;
     border: none;
@@ -119,7 +120,7 @@
   .social-links a:hover{color:var(--ore);}
   .social-links .dot{width:6px;height:6px;background:var(--diamond);flex-shrink:0;}
 
-  .breadcrumb{font-size:12px;color:var(--text-dim);margin-bottom:16px;display:flex;gap:6px;flex-wrap:wrap;}
+  .breadcrumb{font-size:12px;color:var(--text-dim);margin-bottom:12px;display:flex;gap:6px;flex-wrap:wrap;}
   .breadcrumb a{color:var(--text-dim);cursor:pointer;}
   .breadcrumb a:hover{color:var(--ore);}
   .breadcrumb .sep{color:var(--border);}
@@ -254,7 +255,8 @@
   .post-body .post-text.rich{white-space:normal;}
   .post-body .post-text.rich blockquote{border-left:3px solid var(--ore);padding-left:10px;margin:8px 0;color:var(--text-dim);}
   .post-body .post-text.rich ul, .post-body .post-text.rich ol{padding-left:22px;margin:6px 0;}
-  .post-body img.msg-image{max-width:100%;max-height:340px;display:block;margin-top:10px;border:1px solid var(--border);border-radius:var(--radius);}
+  .post-body img.msg-image{max-width:300px;max-height:300px;display:block;margin-top:10px;border:1px solid var(--border);border-radius:var(--radius);object-fit:cover;}
+  @media (max-width:600px){.post-body img.msg-image{max-width:100%;max-height:250px;}}
 
   .reply-area{margin-top:20px;padding-top:18px;border-top:1px solid var(--border);}
   .guest-lock{background:var(--bg-panel);border:1px dashed var(--border);padding:18px;text-align:center;color:var(--text-dim);font-size:13px;margin-top:20px;}
@@ -277,7 +279,7 @@
   .composer-toolbar button:hover{border-color:var(--ore);}
   .composer-attach-input{display:none;}
   .composer-image-preview{position:relative;display:inline-block;margin-top:10px;}
-  .composer-image-preview img{max-width:150px;max-height:110px;display:block;border:1px solid var(--border);border-radius:var(--radius);}
+  .composer-image-preview img{max-width:120px;max-height:100px;display:block;border:1px solid var(--border);border-radius:var(--radius);object-fit:cover;}
   .composer-image-preview .remove-img{position:absolute;top:-9px;right:-9px;background:var(--danger);color:#fff;border:none;width:20px;height:20px;font-size:12px;cursor:pointer;line-height:1;border-radius:50%;}
 
   .topic-modal{display:none;position:fixed;inset:0;background:rgba(6,7,4,0.88);z-index:1000;align-items:flex-start;justify-content:center;padding:6vh 16px;overflow-y:auto;}
@@ -330,6 +332,7 @@
 </head>
 <body>
 
+<!-- ===== ТВОЯ ШАПКА (через nav.js) ===== -->
 <div id="nav-root"></div>
 
 <main>
@@ -392,7 +395,8 @@
   </div>
 
   <div id="topicView">
-    <button class="back-link" id="backFromTopic">← Назад</button>
+    <button class="back-link" id="backFromTopic">← Назад к разделам</button>
+    <button class="back-link" id="backToMainFromTopic" style="margin-left:8px;">← На главную форума</button>
     <div class="breadcrumb" id="topicBreadcrumb"></div>
     <div class="topic-page-head">
       <h2 id="topicTitleEl"></h2>
@@ -410,6 +414,7 @@
   </div>
 </main>
 
+<!-- ===== ТВОЙ ФУТЕР (через nav.js) ===== -->
 <div id="footer-root"></div>
 
 <div class="profile-card" id="profileCard"></div>
@@ -1334,6 +1339,7 @@
     document.getElementById('backFromTopic').addEventListener('click', () => {
       openSubforum(currentSectionKey, currentSubforumKey);
     });
+    document.getElementById('backToMainFromTopic').addEventListener('click', showSections);
 
     document.getElementById('crumbForum').addEventListener('click', showSections);
     document.getElementById('crumbSection').addEventListener('click', showSections);
