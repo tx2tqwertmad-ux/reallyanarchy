@@ -38,20 +38,6 @@
   a:hover{color:var(--ore);}
   ::selection{background:var(--ore);color:#141400;}
 
-  header.site-head{border-bottom:3px solid var(--ore);background:var(--bg-panel);}
-  .head-top{max-width:1180px;margin:0 auto;padding:18px 24px 16px;display:flex;align-items:center;justify-content:space-between;gap:20px;}
-  .brand{display:flex;align-items:center;gap:12px;cursor:pointer;}
-  .brand .mark{width:34px;height:34px;background:var(--ore);position:relative;flex-shrink:0;clip-path:polygon(0 20%,50% 0,100% 20%,100% 80%,50% 100%,0 80%);}
-  .brand .mark::after{content:"";position:absolute;inset:8px;background:var(--bg-base);clip-path:polygon(0 20%,50% 0,100% 20%,100% 80%,50% 100%,0 80%);}
-  .brand .word{font-family:var(--font-display);font-size:15px;letter-spacing:1px;color:var(--text);}
-  .brand .word span{color:var(--ore);}
-  .head-actions{display:flex;align-items:center;gap:10px;}
-  .head-search{background:var(--bg-inset);border:1px solid var(--border);color:var(--text-dim);font-family:var(--font-body);font-size:13px;padding:8px 12px;width:170px;}
-  nav.site-nav{background:var(--bg-inset);border-top:1px solid var(--border-lo);}
-  nav.site-nav .wrap{max-width:1180px;margin:0 auto;padding:0 24px;display:flex;gap:2px;flex-wrap:wrap;}
-  nav.site-nav a{display:block;padding:11px 14px;font-size:13px;font-weight:600;color:var(--text-dim);border-bottom:2px solid transparent;}
-  nav.site-nav a:hover, nav.site-nav a.active{color:var(--text);border-bottom-color:var(--ore);}
-
   .btn{display:inline-block;background:var(--bg-raised);border:1px solid var(--border);color:var(--text);font-family:var(--font-body);font-weight:700;font-size:13px;padding:10px 16px;cursor:pointer;transition:border-color .15s, transform .05s;white-space:nowrap;}
   .btn:hover{border-color:var(--ore);}
   .btn:active{transform:translateY(1px);}
@@ -219,10 +205,6 @@
   .topic-list-row{background:var(--bg-panel);border:1px solid var(--border);border-bottom:none;padding:13px 16px;display:grid;grid-template-columns:1fr auto auto auto;gap:16px;align-items:center;cursor:pointer;}
   .topic-list-row:hover{background:rgba(242,183,5,0.05);}
   .topic-list-row:last-child{border-bottom:1px solid var(--border);}
-  .topic-list-row .badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border:1px solid;margin-right:8px;letter-spacing:0.3px;}
-  .badge.review{color:var(--ore);border-color:var(--ore-dim);background:rgba(242,183,5,0.08);}
-  .badge.fixed{color:var(--ok);border-color:#3f6a3d;background:rgba(126,201,122,0.08);}
-  .badge.rejected{color:var(--danger);border-color:#7a3226;background:rgba(217,85,63,0.08);}
   .topic-list-row .t-title{color:var(--text);font-weight:700;font-size:14px;}
   .topic-list-row .t-title:hover{color:var(--ore);}
   .topic-list-row .t-meta{color:var(--text-dim);font-size:11px;margin-top:4px;}
@@ -239,17 +221,76 @@
 
   .post-item{display:grid;grid-template-columns:76px 1fr;gap:16px;background:var(--bg-panel);border:1px solid var(--border);margin-bottom:10px;}
   .post-item .post-side{background:var(--bg-inset);padding:16px 10px;text-align:center;border-right:1px solid var(--border-lo);}
-  .post-avatar-img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--border-lo);margin:0 auto 8px;}
-  .post-avatar{width:44px;height:44px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:14px;color:#141400;border-radius:50%;}
-  .post-side .post-author{color:var(--text);font-weight:800;font-size:12px;word-break:break-word;}
+  .post-avatar-img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--border-lo);margin:0 auto 8px;cursor:pointer;}
+  .post-avatar-img:hover{border-color:var(--ore);}
+  .post-avatar{width:44px;height:44px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:14px;color:#141400;border-radius:50%;cursor:pointer;}
+  .post-avatar:hover{outline:2px solid var(--ore);outline-offset:2px;}
+  .post-side .post-author{color:var(--text);font-weight:800;font-size:12px;word-break:break-word;cursor:pointer;}
+  .post-side .post-author:hover{color:var(--ore);}
   .post-side .post-num{color:var(--text-dim);font-size:10px;margin-top:6px;}
   .post-body{padding:14px 16px 16px;}
   .post-body .post-time{color:var(--text-dim);font-size:11px;margin-bottom:8px;}
   .post-body .post-text{color:var(--text);font-size:14px;word-wrap:break-word;white-space:pre-wrap;}
+  .post-body .post-text.rich{white-space:normal;}
+  .post-body .post-text.rich blockquote{border-left:3px solid var(--ore);padding-left:10px;margin:8px 0;color:var(--text-dim);}
+  .post-body .post-text.rich ul, .post-body .post-text.rich ol{padding-left:22px;margin:6px 0;}
+  .post-body img.msg-image{max-width:100%;max-height:340px;display:block;margin-top:10px;border:1px solid var(--border);}
 
   .reply-area{margin-top:20px;padding-top:18px;border-top:1px solid var(--border);}
-  .reply-area textarea{min-height:80px;resize:vertical;margin-bottom:10px;}
   .guest-lock{background:var(--bg-panel);border:1px dashed var(--border);padding:18px;text-align:center;color:var(--text-dim);font-size:13px;margin-top:20px;}
+
+  .editor-wrap{display:flex;gap:14px;align-items:flex-start;}
+  .editor-avatar{width:60px;height:60px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;color:#141400;border-radius:50%;}
+  .editor-box{flex:1;min-width:0;background:var(--bg-panel);border:1px solid var(--border);border-top:3px solid var(--ore);}
+  .editor-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:7px 9px;border-bottom:1px solid var(--border-lo);background:var(--bg-raised);}
+  .editor-toolbar button{background:none;border:1px solid transparent;color:var(--text);font-size:14px;width:30px;height:28px;cursor:pointer;line-height:1;}
+  .editor-toolbar button:hover{background:var(--bg-inset);border-color:var(--border);}
+  .editor-toolbar .tb-sep{width:1px;height:20px;background:var(--border);margin:0 5px;flex-shrink:0;}
+  .editor-content{min-height:120px;max-height:420px;overflow-y:auto;padding:12px 14px;font-size:14px;color:var(--text);outline:none;line-height:1.55;}
+  .editor-content:empty:before{content:attr(data-placeholder);color:var(--text-dim);}
+  .editor-content blockquote{border-left:3px solid var(--ore);padding-left:10px;margin:8px 0;color:var(--text-dim);}
+  .editor-content img{max-width:100%;margin-top:6px;display:block;}
+  .editor-actions{display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:10px;}
+
+  .composer-toolbar{display:flex;gap:8px;margin-top:8px;}
+  .composer-toolbar button{background:var(--bg-raised);border:1px solid var(--border);color:var(--text);font-size:16px;padding:6px 11px;cursor:pointer;line-height:1;}
+  .composer-toolbar button:hover{border-color:var(--ore);}
+  .composer-attach-input{display:none;}
+  .composer-image-preview{position:relative;display:inline-block;margin-top:10px;}
+  .composer-image-preview img{max-width:150px;max-height:110px;display:block;border:1px solid var(--border);}
+  .composer-image-preview .remove-img{position:absolute;top:-9px;right:-9px;background:var(--danger);color:#fff;border:none;width:20px;height:20px;font-size:12px;cursor:pointer;line-height:1;border-radius:50%;}
+
+  .emoji-picker{position:fixed;z-index:1250;background:var(--bg-panel);border:1px solid var(--border);border-top:3px solid var(--ore);padding:10px;width:272px;max-height:230px;overflow-y:auto;display:grid;grid-template-columns:repeat(8,1fr);gap:2px;}
+  .emoji-picker span{cursor:pointer;font-size:18px;text-align:center;padding:4px 0;}
+  .emoji-picker span:hover{background:var(--bg-raised);}
+
+  .profile-card{position:fixed;z-index:1300;width:300px;background:var(--bg-panel);border:1px solid var(--border);border-top:3px solid var(--ore);box-shadow:0 16px 34px rgba(0,0,0,0.55);display:none;border-radius:var(--radius);}
+  .profile-card.active{display:block;}
+  .profile-card-head{display:flex;align-items:flex-start;gap:12px;padding:14px 40px 10px 14px;position:relative;}
+  .profile-card-avatar{width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:16px;color:#141400;border-radius:50%;}
+  .profile-card-avatar img{width:48px;height:48px;border-radius:50%;object-fit:cover;}
+  .profile-card-name{font-weight:800;font-size:14px;color:var(--text);}
+  .profile-card-status{font-size:11px;margin-top:3px;}
+  .profile-card-status.online{color:var(--ok);}
+  .profile-card-status.offline{color:var(--text-dim);}
+  .profile-card-role{display:inline-block;margin:2px 14px 0;font-size:11px;font-weight:800;color:var(--ore);border:1px solid var(--ore-dim);background:rgba(242,183,5,0.08);padding:2px 8px;}
+  .profile-card-more{background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer;position:absolute;top:10px;right:10px;line-height:1;padding:4px 6px;}
+  .profile-card-more:hover{color:var(--ore);}
+  .profile-card-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:14px;border-top:1px solid var(--border-lo);border-bottom:1px solid var(--border-lo);margin-top:12px;}
+  .profile-card-stats div{text-align:center;}
+  .profile-card-stats b{display:block;color:var(--text);font-size:13px;}
+  .profile-card-stats span{color:var(--text-dim);font-size:9px;text-transform:uppercase;letter-spacing:0.3px;}
+  .profile-card-actions{display:flex;gap:6px;padding:12px 14px;flex-wrap:wrap;}
+  .profile-card-actions .btn{flex:1;min-width:80px;}
+  .profile-dropdown{position:absolute;top:40px;right:8px;background:var(--bg-raised);border:1px solid var(--border);width:220px;z-index:1310;display:none;}
+  .profile-dropdown.active{display:block;}
+  .profile-dropdown .item{padding:9px 12px;font-size:12px;color:var(--text);cursor:pointer;border-bottom:1px solid var(--border-lo);}
+  .profile-dropdown .item:last-child{border-bottom:none;}
+  .profile-dropdown .item:hover{background:var(--bg-inset);color:var(--ore);}
+  .profile-dropdown .label{padding:8px 12px 4px;font-size:10px;color:var(--text-dim);text-transform:uppercase;}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--bg-raised);border:1px solid var(--ore);color:var(--text);padding:10px 20px;font-size:13px;z-index:1400;display:none;border-radius:var(--radius);}
+  .toast.active{display:block;}
 
   .topic-modal{display:none;position:fixed;inset:0;background:rgba(6,7,4,0.88);z-index:1000;align-items:flex-start;justify-content:center;padding:6vh 16px;overflow-y:auto;}
   .topic-modal.active{display:flex;}
@@ -263,42 +304,22 @@
     .layout{grid-template-columns:1fr;}
     .subforum-row{grid-template-columns:1fr auto;}
     .subforum-row .last-col{display:none;}
-    .head-search{display:none;}
     .post-item{grid-template-columns:1fr;}
     .post-side{display:flex;align-items:center;gap:10px;text-align:left;border-right:none;border-bottom:1px solid var(--border-lo);}
     .post-avatar{margin:0;}
     .topic-list-row{grid-template-columns:1fr auto;}
     .topic-list-row .num-col, .topic-list-row .date-col{display:none;}
+    .profile-card{width:88vw;}
+    .editor-avatar{width:40px;height:40px;font-size:14px;}
   }
 </style>
 </head>
 <body>
 
-<header class="site-head">
-  <div class="head-top">
-    <div class="brand" onclick="location.href='index.html'">
-      <div class="mark"></div>
-      <div class="word">REALLY<span>ANARCHY</span></div>
-    </div>
-    <div class="head-actions">
-      <input type="text" class="head-search" placeholder="Поиск по форуму…" id="searchInput">
-      <div id="authButtons"></div>
-    </div>
-  </div>
-  <nav class="site-nav">
-    <div class="wrap">
-      <a href="index.html">Новости</a>
-      <a href="rules.html">Правила</a>
-      <a href="mods.html">Моды</a>
-      <a href="appeal.html">Апелляция</a>
-      <a href="forum.html" class="active">Форум</a>
-      <a href="https://reallyanarchy.easydonate.ru/" target="_blank">Магазин</a>
-    </div>
-  </nav>
-</header>
+<!-- ШАПКА ИЗ ТВОЕГО САЙТА (ЧЕРЕЗ nav.js) -->
+<div id="nav-root"></div>
 
 <main>
-
   <div id="listView">
     <div class="page-head">
       <h1>Форум</h1>
@@ -343,18 +364,16 @@
       <button class="btn primary" id="subforumCreateBtn">+ Создать тему</button>
     </div>
 
-    <div class="filter-bar" id="filterBar">
+    <div class="filter-bar">
       <span class="filter-label">Фильтры ▼</span>
       <div class="filter-group">
         <button class="filter-btn active" data-filter="all">Все темы <span class="count" id="filterAllCount">0</span></button>
-        <button class="filter-btn" data-filter="unread">Непрочитанные <span class="count" id="filterUnreadCount">0</span></button>
         <button class="filter-btn" data-filter="my">Мои темы <span class="count" id="filterMyCount">0</span></button>
         <button class="filter-btn" data-filter="no-replies">Без ответов <span class="count" id="filterNoRepliesCount">0</span></button>
       </div>
     </div>
 
     <div id="subforumTopicsList"></div>
-
     <div class="pagination" id="pagination"></div>
   </div>
 
@@ -376,23 +395,46 @@
   </div>
 </main>
 
-<footer class="site-foot">© 2026 REALLYANARCHY — Все права защищены.</footer>
+<div id="footer-root"></div>
+
+<!-- КАРТОЧКА ПРОФИЛЯ -->
+<div class="profile-card" id="profileCard"></div>
+<div class="toast" id="toast"></div>
 
 <script src="db.js"></script>
 <script src="nav.js"></script>
 <script>
 (function(){
   const API_URL = window.location.origin + '/api';
+  const FORUM_KEY = 'ra_forum_v4';
 
-  // === АВАТАРКИ ===
-  const AVATAR_COLORS = ['#f2b705', '#5fd8c9', '#d9553f', '#7ec97a', '#c98af0', '#5fa8d8', '#f7b731', '#4ecdc4'];
+  // === ЭМОДЗИ ===
+  const EMOJI_LIST = [
+    '😀','😁','😂','🤣','😊','😇','🙂','🙃','😉','😍','🥰','😘','😜','🤪','😎','🤩',
+    '🥳','😏','😴','🤔','🤨','😐','😑','😒','🙄','😬','😢','😭','😤','😠','😡','🤯',
+    '😱','😨','😰','🥵','🥶','🤢','🤮','🤒','🤕','🤠','🥸','😷','🤐','😶','😳','🥴',
+    '👍','👎','👏','🙌','🙏','💪','🤝','👋','✌️','🤞','🤟','🤙','👌','🖕','✊','🫡',
+    '❤️','🧡','💛','💚','💙','💜','🖤','🤍','💔','💯','🔥','✨','⭐','⚡','💥','💫',
+    '🎉','🎊','🏆','🥇','🎁','🎮','🕹️','🎯','🎲','🃏','🧩','🛡️','⚔️','🪓','🏹','💣',
+    '🍕','🍔','🍟','🌭','🍗','🍖','🥩','🍞','🧀','🍩','🍪','🍫','🍦','☕','🍺','🥤',
+    '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐸','🐵','🐷','🐔','🐺','🐴','🐲','🐍',
+    '🚀','🛸','🚗','🏠','🏰','🌲','🌋','🌊','⛏️','🧱','💎','🪙','⏰','📦','📌','💀'
+  ];
 
-  function avatarColor(name) {
-    let h = 0;
-    for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
-    return AVATAR_COLORS[h % AVATAR_COLORS.length];
+  function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str == null ? '' : String(str);
+    return d.innerHTML;
   }
 
+  function avatarColor(name) {
+    const colors = ['#f2b705', '#5fd8c9', '#d9553f', '#7ec97a', '#c98af0', '#5fa8d8', '#f7b731', '#4ecdc4'];
+    let h = 0;
+    for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+    return colors[h % colors.length];
+  }
+
+  // === ПОЛУЧЕНИЕ АВАТАРКИ ИЗ ПРОФИЛЯ ===
   function getUserAvatar(username) {
     try {
       const raw = localStorage.getItem('ra_profile_data');
@@ -405,62 +447,161 @@
     } catch(e) { return null; }
   }
 
-  // ===== ФУНКЦИИ ДЛЯ РАБОТЫ С СЕРВЕРОМ =====
-  async function getTopics(sectionKey, subforumKey) {
-    try {
-      const res = await fetch(`${API_URL}/forum/topics/${sectionKey}/${subforumKey}`);
-      return await res.json();
-    } catch (e) {
-      console.error('Ошибка загрузки тем:', e);
-      return [];
-    }
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('active');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('active'), 2400);
   }
 
-  async function createTopic(sectionKey, subforumKey, title, author, text) {
-    try {
-      const res = await fetch(`${API_URL}/forum/topics`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sectionKey, subforumKey, title, author, text })
+  function closeEmojiPicker() {
+    const ex = document.getElementById('activeEmojiPicker');
+    if (ex) ex.remove();
+  }
+
+  function openEmojiPicker(btn, onPick) {
+    closeEmojiPicker();
+    const picker = document.createElement('div');
+    picker.className = 'emoji-picker';
+    picker.id = 'activeEmojiPicker';
+    picker.innerHTML = EMOJI_LIST.map(e => `<span>${e}</span>`).join('');
+    document.body.appendChild(picker);
+
+    const rect = btn.getBoundingClientRect();
+    let top = rect.bottom + 6;
+    let left = rect.left;
+    const pw = 272;
+    if (left + pw > window.innerWidth - 10) left = window.innerWidth - pw - 10;
+    if (top + 230 > window.innerHeight) top = Math.max(10, rect.top - 236);
+    picker.style.top = top + 'px';
+    picker.style.left = left + 'px';
+
+    picker.querySelectorAll('span').forEach(span => {
+      span.addEventListener('click', (e) => {
+        e.stopPropagation();
+        onPick(span.textContent);
+        picker.remove();
       });
-      return await res.json();
-    } catch (e) {
-      console.error('Ошибка создания темы:', e);
-      return { ok: false };
-    }
-  }
+    });
 
-  async function getMessages(topicId) {
-    try {
-      const res = await fetch(`${API_URL}/forum/messages/${topicId}`);
-      return await res.json();
-    } catch (e) {
-      console.error('Ошибка загрузки сообщений:', e);
-      return [];
-    }
-  }
-
-  async function addMessage(topicId, author, text, time) {
-    try {
-      const res = await fetch(`${API_URL}/forum/messages`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topicId, author, text, time })
+    setTimeout(() => {
+      document.addEventListener('click', function handler(ev) {
+        if (!picker.contains(ev.target) && ev.target !== btn) {
+          picker.remove();
+          document.removeEventListener('click', handler);
+        }
       });
-      return await res.json();
-    } catch (e) {
-      console.error('Ошибка отправки сообщения:', e);
-      return { ok: false };
-    }
+    }, 0);
   }
 
-  // ===== СТРУКТУРА РАЗДЕЛОВ =====
-  const SECTIONS = {
-    info: { name: 'Информация для игроков', subforums: ['rules', 'admin', 'banned'] },
-    tech: { name: 'Технический раздел', subforums: ['ideas', 'bugs'] },
-    complaints: { name: 'Жалобы и апелляции', subforums: ['player_reports', 'mod_reports', 'appeals'] },
-    chat: { name: 'Общение', subforums: ['offtop', 'coords', 'teammate', 'builds'] }
-  };
+  function sanitizeHtml(html) {
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    div.querySelectorAll('script,style,iframe,object,embed').forEach(el => el.remove());
+    div.querySelectorAll('*').forEach(el => {
+      [...el.attributes].forEach(attr => {
+        if (/^on/i.test(attr.name)) el.removeAttribute(attr.name);
+        if ((attr.name === 'href' || attr.name === 'src') && /^\s*javascript:/i.test(attr.value)) el.removeAttribute(attr.name);
+      });
+    });
+    return div.innerHTML;
+  }
+
+  // === ДАННЫЕ ФОРУМА ===
+  function getDefaultForum() {
+    return {
+      sections: {
+        info: {
+          name: 'Информация для игроков',
+          open: true,
+          subforums: {
+            rules: { name: 'Правила', createLabel: '+ Создать тему', fields: null, topics: [] },
+            admin: { name: 'Администрация проекта', createLabel: '+ Создать тему', fields: null, topics: [] },
+            banned: { name: 'Список запрещённых модификаций', createLabel: '+ Создать тему', fields: null, topics: [] }
+          }
+        },
+        tech: {
+          name: 'Технический раздел',
+          open: true,
+          subforums: {
+            ideas: { name: 'Ваши идеи и предложения', createLabel: '+ Предложить идею', fields: null, topics: [] },
+            bugs: { name: 'Баги', createLabel: '📝 Сообщить о баге', fields: [
+              { key: 'desc', label: 'Описание бага' },
+              { key: 'steps', label: 'Шаги воспроизведения' },
+              { key: 'where', label: 'Где встретил' }
+            ], topics: [] }
+          }
+        },
+        complaints: {
+          name: 'Жалобы и апелляции',
+          open: true,
+          subforums: {
+            player_reports: { name: 'Жалобы на игроков', createLabel: '⚠️ Подать жалобу', fields: [
+              { key: 'target', label: 'На кого жалоба' },
+              { key: 'desc', label: 'Суть жалобы' },
+              { key: 'proof', label: 'Пруфы' }
+            ], topics: [] },
+            mod_reports: { name: 'Жалобы на модерацию', createLabel: '⚠️ Подать жалобу', fields: [
+              { key: 'target', label: 'На кого жалоба' },
+              { key: 'desc', label: 'Суть жалобы' }
+            ], topics: [] },
+            appeals: { name: 'Апелляции', createLabel: '📨 Подать апелляцию', fields: [
+              { key: 'nick', label: 'Ваш ник' },
+              { key: 'reason', label: 'Причина бана' },
+              { key: 'why', label: 'Почему нужно снять бан' }
+            ], topics: [] }
+          }
+        },
+        chat: {
+          name: 'Общение',
+          open: true,
+          subforums: {
+            offtop: { name: 'Оффтоп', createLabel: '+ Создать тему', fields: null, topics: [] },
+            coords: { name: 'Координаты базы', createLabel: '+ Создать тему', fields: null, topics: [] },
+            teammate: { name: 'Поиск тимейта', createLabel: '+ Создать тему', fields: null, topics: [] },
+            builds: { name: 'Постройки', createLabel: '+ Поделиться постройкой', fields: null, topics: [] }
+          }
+        }
+      },
+      messages: {},
+      online: []
+    };
+  }
+
+  let storageOk = true;
+  try { localStorage.setItem('__probe__', '1'); localStorage.removeItem('__probe__'); } catch(e) { storageOk = false; }
+
+  function getForumData() {
+    if (!storageOk) return getDefaultForum();
+    const raw = localStorage.getItem(FORUM_KEY);
+    if (raw) {
+      try {
+        const data = JSON.parse(raw);
+        const def = getDefaultForum();
+        for (const key of Object.keys(def.sections)) {
+          if (!data.sections[key]) data.sections[key] = def.sections[key];
+        }
+        return data;
+      } catch(e) {}
+    }
+    const def = getDefaultForum();
+    try { localStorage.setItem(FORUM_KEY, JSON.stringify(def)); } catch(e) {}
+    return def;
+  }
+
+  function saveForumData(data) {
+    if (!storageOk) return;
+    try { localStorage.setItem(FORUM_KEY, JSON.stringify(data)); } catch(e) {}
+  }
+
+  let forumData = getForumData();
+  let currentSectionKey = null;
+  let currentSubforumKey = null;
+  let currentTopics = [];
+  let currentPage = 1;
+  const ITEMS_PER_PAGE = 10;
+  let currentFilter = 'all';
 
   const SUBFORUM_NAMES = {
     rules: 'Правила',
@@ -477,60 +618,87 @@
     builds: 'Постройки'
   };
 
-  const SUBFORUM_LABELS = {
-    bugs: '📝 Сообщить о баге',
-    player_reports: '⚠️ Подать жалобу',
-    mod_reports: '⚠️ Подать жалобу',
-    appeals: '📨 Подать апелляцию',
-    builds: '+ Поделиться постройкой'
+  const SECTIONS = {
+    info: { name: 'Информация для игроков', subforums: ['rules', 'admin', 'banned'] },
+    tech: { name: 'Технический раздел', subforums: ['ideas', 'bugs'] },
+    complaints: { name: 'Жалобы и апелляции', subforums: ['player_reports', 'mod_reports', 'appeals'] },
+    chat: { name: 'Общение', subforums: ['offtop', 'coords', 'teammate', 'builds'] }
   };
 
   function getSubforumLabel(key) {
-    return SUBFORUM_LABELS[key] || '+ Создать тему';
+    const labels = {
+      bugs: '📝 Сообщить о баге',
+      player_reports: '⚠️ Подать жалобу',
+      mod_reports: '⚠️ Подать жалобу',
+      appeals: '📨 Подать апелляцию',
+      builds: '+ Поделиться постройкой'
+    };
+    return labels[key] || '+ Создать тему';
   }
 
-  let currentSectionKey = null;
-  let currentSubforumKey = null;
-  let currentTopics = [];
-  let currentPage = 1;
-  const ITEMS_PER_PAGE = 10;
-  let currentFilter = 'all';
-
-  function escapeHtml(str) {
-    const d = document.createElement('div');
-    d.textContent = str == null ? '' : String(str);
-    return d.innerHTML;
-  }
-
-  function updateAuthButtons() {
-    const container = document.getElementById('authButtons');
-    const user = Auth.currentUser();
-    if (user) {
-      container.innerHTML = `
-        <span style="color:var(--text);font-size:13px;margin-right:6px;">${escapeHtml(user.username)}</span>
-        <button class="btn small" id="logoutBtn">Выйти</button>
-      `;
-      document.getElementById('logoutBtn').addEventListener('click', () => {
-        Auth.logout();
-        location.reload();
-      });
-    } else {
-      container.innerHTML = `
-        <a href="auth.html" class="btn primary small">Войти</a>
-        <a href="auth.html#register" class="btn small">Регистрация</a>
-      `;
+  // === АПИ ===
+  async function getTopics(sectionKey, subforumKey) {
+    try {
+      const res = await fetch(`${API_URL}/forum/topics/${sectionKey}/${subforumKey}`);
+      return await res.json();
+    } catch(e) {
+      console.error('Ошибка загрузки тем:', e);
+      return [];
     }
   }
 
-  function renderOnline() {
-    const onlineUsers = ['tufhj', 'guest1', 'guest2', 'admin'];
-    document.getElementById('onlineUsers').innerHTML = onlineUsers.map(u =>
-      `<span class="name">${escapeHtml(u)}</span>`
-    ).join(', ');
-    document.getElementById('onlineTotal').textContent = `Всего: ${onlineUsers.length} пользователей`;
+  async function createTopic(sectionKey, subforumKey, title, author, text) {
+    try {
+      const res = await fetch(`${API_URL}/forum/topics`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sectionKey, subforumKey, title, author, text })
+      });
+      return await res.json();
+    } catch(e) {
+      console.error('Ошибка создания темы:', e);
+      return { ok: false };
+    }
   }
 
-  // ===== ГЛАВНАЯ СТРАНИЦА =====
+  async function getMessages(topicId) {
+    try {
+      const res = await fetch(`${API_URL}/forum/messages/${topicId}`);
+      return await res.json();
+    } catch(e) {
+      console.error('Ошибка загрузки сообщений:', e);
+      return [];
+    }
+  }
+
+  async function addMessage(topicId, author, text, time) {
+    try {
+      const res = await fetch(`${API_URL}/forum/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topicId, author, text, time })
+      });
+      return await res.json();
+    } catch(e) {
+      console.error('Ошибка отправки сообщения:', e);
+      return { ok: false };
+    }
+  }
+
+  // === ОТОБРАЖЕНИЕ ===
+  function hideAllViews() {
+    document.getElementById('listView').style.display = 'none';
+    document.getElementById('subforumView').style.display = 'none';
+    document.getElementById('topicView').style.display = 'none';
+  }
+
+  function showSections() {
+    hideAllViews();
+    document.getElementById('listView').style.display = 'block';
+    window.scrollTo(0, 0);
+    renderForum();
+  }
+
   async function renderForum() {
     const container = document.getElementById('forumContainer');
     let html = '';
@@ -572,7 +740,6 @@
     }
     container.innerHTML = html;
 
-    // Загружаем статистику для каждого подфорума
     for (const [sKey, section] of Object.entries(SECTIONS)) {
       for (const fKey of section.subforums) {
         const topics = await getTopics(sKey, fKey);
@@ -595,7 +762,6 @@
       }
     }
 
-    // События
     document.querySelectorAll('.forum-section-header').forEach(header => {
       header.addEventListener('click', function() {
         const key = this.dataset.section;
@@ -613,12 +779,48 @@
       });
     });
 
-    updateAuthButtons();
-    renderOnline();
     renderSidebar();
+    renderOnline();
   }
 
-  // ===== СТРАНИЦА ПОДФОРУМА =====
+  function allTopicsFlat() {
+    const out = [];
+    for (const section of Object.values(forumData.sections)) {
+      for (const sub of Object.values(section.subforums)) {
+        for (const t of sub.topics) out.push(t);
+      }
+    }
+    return out;
+  }
+
+  function renderSidebar() {
+    const allTopics = allTopicsFlat();
+    const rec = allTopics.slice(0, 3);
+    document.getElementById('recommendedList').innerHTML = rec.map(t => `
+      <div class="side-item" onclick="window.openTopic(${t.id})">
+        ${escapeHtml(t.title)}
+        <div class="info">${t.last} · Ответов: ${t.replies}</div>
+      </div>
+    `).join('') || '<div class="dim">Пока нечего показать</div>';
+
+    const sorted = [...allTopics].sort((a, b) => b.replies - a.replies).slice(0, 5);
+    document.getElementById('popularList').innerHTML = sorted.map(t => `
+      <div class="side-item" onclick="window.openTopic(${t.id})">
+        ${escapeHtml(t.title)}
+        <div class="info">${t.last} · Ответов: ${t.replies}</div>
+      </div>
+    `).join('') || '<div class="dim">Пока нечего показать</div>';
+  }
+
+  function renderOnline() {
+    const onlineUsers = ['tufhj', 'admin'];
+    document.getElementById('onlineUsers').innerHTML = onlineUsers.map(u =>
+      `<span class="name">${escapeHtml(u)}</span>`
+    ).join(', ');
+    document.getElementById('onlineTotal').textContent = `Всего: ${onlineUsers.length} пользователей`;
+  }
+
+  // === ПОДФОРУМ ===
   async function openSubforum(sectionKey, subforumKey) {
     currentSectionKey = sectionKey;
     currentSubforumKey = subforumKey;
@@ -653,7 +855,6 @@
     renderTopicsWithPagination(topics, 1);
   }
 
-  // ===== ФИЛЬТРЫ И ПАГИНАЦИЯ =====
   function getFilteredTopics(topics, filter) {
     const user = Auth.currentUser();
     const username = user ? user.username : '';
@@ -679,13 +880,12 @@
     const pageTopics = filtered.slice(start, end);
 
     document.getElementById('filterAllCount').textContent = topics.length;
-    document.getElementById('filterUnreadCount').textContent = topics.length;
     document.getElementById('filterMyCount').textContent = topics.filter(t => t.author === (Auth.currentUser() ? Auth.currentUser().username : '')).length;
     document.getElementById('filterNoRepliesCount').textContent = topics.filter(t => t.replies === 0).length;
 
     const container = document.getElementById('subforumTopicsList');
     if (pageTopics.length === 0) {
-      container.innerHTML = '<div class="empty-row">Нет тем, соответствующих фильтру</div>';
+      container.innerHTML = '<div class="empty-row">Нет тем</div>';
     } else {
       container.innerHTML = pageTopics.map(t => `
         <div class="topic-list-row" data-topic="${t.id}">
@@ -700,7 +900,6 @@
       `).join('');
     }
 
-    // Пагинация
     const pagination = document.getElementById('pagination');
     let pagHtml = '';
     pagHtml += `<button class="page-btn ${page <= 1 ? 'disabled' : ''}" data-page="${page - 1}">‹</button>`;
@@ -738,7 +937,6 @@
     });
   }
 
-  // Фильтры
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -748,10 +946,59 @@
     });
   });
 
-  // ===== СОЗДАНИЕ ТЕМЫ =====
+  // === СОЗДАНИЕ ТЕМЫ ===
   function openCreateForm(sectionKey, subforumKey) {
     const modal = document.getElementById('topicModal');
     const content = document.getElementById('modalContent');
+    const found = forumData.sections[sectionKey]?.subforums[subforumKey];
+    const fields = found?.fields || null;
+
+    if (fields) {
+      content.innerHTML = `
+        <h2 style="margin-bottom:16px;font-size:17px;">${escapeHtml(found.createLabel.replace(/^\W+\s*/, ''))}</h2>
+        <form id="customTopicForm">
+          ${fields.map((f, i) => `
+            <div class="field">
+              <label for="cf_${i}">${escapeHtml(f.label)}</label>
+              <textarea id="cf_${i}" required style="min-height:44px;"></textarea>
+            </div>
+          `).join('')}
+          <button type="submit" class="btn primary block">${escapeHtml(found.createLabel)}</button>
+          <div class="form-msg" id="topicMsg"></div>
+        </form>
+      `;
+      modal.classList.add('active');
+
+      document.getElementById('customTopicForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const msgEl = document.getElementById('topicMsg');
+        const values = fields.map((f, i) => document.getElementById('cf_' + i).value.trim());
+        if (values.some(v => !v)) {
+          msgEl.className = 'form-msg err';
+          msgEl.textContent = 'Заполните все поля.';
+          return;
+        }
+        const user = Auth.currentUser();
+        const author = user ? user.username : 'Гость';
+        const now = new Date().toLocaleDateString('ru-RU');
+        const body = fields.map((f, i) => `${f.label}: ${values[i]}`).join('\n');
+        const title = `${found.name.slice(0, -1)} от ${author}`;
+
+        const result = await createTopic(sectionKey, subforumKey, title, author, body);
+        if (result.ok) {
+          msgEl.className = 'form-msg ok';
+          msgEl.textContent = 'Отправлено!';
+          setTimeout(() => {
+            modal.classList.remove('active');
+            openSubforum(sectionKey, subforumKey);
+          }, 500);
+        } else {
+          msgEl.className = 'form-msg err';
+          msgEl.textContent = 'Ошибка создания темы';
+        }
+      });
+      return;
+    }
 
     content.innerHTML = `
       <h2 style="margin-bottom:16px;font-size:17px;">Создать тему</h2>
@@ -768,7 +1015,6 @@
         <div class="form-msg" id="topicMsg"></div>
       </form>
     `;
-
     modal.classList.add('active');
 
     document.getElementById('newTopicForm').addEventListener('submit', async function(e) {
@@ -801,7 +1047,106 @@
     });
   }
 
-  // ===== СТРАНИЦА ТЕМЫ =====
+  // === КАРТОЧКА ПРОФИЛЯ ===
+  function computeMessageCount(username) {
+    let count = 0;
+    for (const arr of Object.values(forumData.messages)) {
+      count += arr.filter(m => m.author === username).length;
+    }
+    return count;
+  }
+
+  window.openProfileCard = function(username, event) {
+    if (!event) return;
+    event.stopPropagation();
+    closeEmojiPicker();
+    const card = document.getElementById('profileCard');
+    const avatar = getUserAvatar(username);
+    const color = avatarColor(username);
+    const msgCount = computeMessageCount(username);
+
+    card.innerHTML = `
+      <div class="profile-card-head">
+        <div class="profile-card-avatar" style="background:${color};">
+          ${avatar ? `<img src="${avatar}">` : escapeHtml(username.slice(0,1).toUpperCase())}
+        </div>
+        <div>
+          <div class="profile-card-name">${escapeHtml(username)}</div>
+          <div class="profile-card-status online">сейчас онлайн</div>
+        </div>
+        <button class="profile-card-more" id="profileMoreBtn">⋯</button>
+        <div class="profile-dropdown" id="profileDropdown">
+          <div class="label">Дополнительно</div>
+          <div class="item" data-action="report">Пожаловаться</div>
+          <div class="item" data-action="find-messages">Найти сообщения</div>
+        </div>
+      </div>
+      <div class="profile-card-role">Игрок</div>
+      <div class="profile-card-stats">
+        <div><b>${msgCount}</b><span>Сообщ.</span></div>
+        <div><b>0</b><span>Подписч.</span></div>
+        <div><b>0</b><span>Реакции</span></div>
+        <div><b>0</b><span>Награды</span></div>
+      </div>
+      <div class="profile-card-actions">
+        <button class="btn small" id="profSubBtn">Подписаться</button>
+        <button class="btn small" id="profIgnBtn">+ Игнор</button>
+        <button class="btn primary small" id="profMsgBtn">Написать</button>
+      </div>
+    `;
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    let top = rect.bottom + 8;
+    let left = rect.left;
+    const cardWidth = 300;
+    if (left + cardWidth > window.innerWidth - 12) left = window.innerWidth - cardWidth - 12;
+    if (left < 12) left = 12;
+    if (top + 300 > window.innerHeight) top = Math.max(12, rect.top - 300);
+    card.style.top = top + 'px';
+    card.style.left = left + 'px';
+    card.classList.add('active');
+
+    document.getElementById('profileMoreBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('profileDropdown').classList.toggle('active');
+    });
+
+    card.querySelectorAll('.profile-dropdown .item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        card.classList.remove('active');
+        if (item.dataset.action === 'report') {
+          toast('Жалоба отправлена');
+        } else {
+          toast('Функция в разработке');
+        }
+      });
+    });
+
+    document.getElementById('profSubBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toast(`Вы подписались на ${username}`);
+    });
+    document.getElementById('profIgnBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toast(`${username} добавлен в игнор`);
+    });
+    document.getElementById('profMsgBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toast('Личные сообщения пока не подключены');
+    });
+
+    setTimeout(() => {
+      document.addEventListener('click', function handler(ev) {
+        if (!card.contains(ev.target)) {
+          card.classList.remove('active');
+          document.removeEventListener('click', handler);
+        }
+      });
+    }, 0);
+  };
+
+  // === СТРАНИЦА ТЕМЫ ===
   function renderReplyBlock(topicId) {
     const user = Auth.currentUser();
     const block = document.getElementById('replyBlock');
@@ -809,44 +1154,118 @@
       block.innerHTML = `
         <div class="guest-lock">
           Только авторизованные пользователи могут отвечать в теме.
-          <div style="margin-top:12px;">
-            <a href="auth.html" class="btn primary small">Войдите, чтобы ответить</a>
-          </div>
+          <div style="margin-top:12px;"><a href="auth.html" class="btn primary small">Войдите, чтобы ответить</a></div>
         </div>
       `;
       return;
     }
+
+    const avatar = getUserAvatar(user.username);
+    const color = avatarColor(user.username);
+
     block.innerHTML = `
       <div class="reply-area">
-        <textarea id="replyText" placeholder="Напишите ответ…"></textarea>
-        <button class="btn primary" id="replyBtn">Ответить</button>
+        <div class="editor-wrap">
+          <div class="editor-avatar" style="background:${color};${avatar ? `background-image:url('${avatar}');background-size:cover;background-position:center;` : ''}">
+            ${avatar ? '' : escapeHtml(user.username.slice(0,1).toUpperCase())}
+          </div>
+          <div class="editor-box">
+            <div class="editor-toolbar">
+              <button type="button" data-cmd="bold" title="Жирный"><b>Ж</b></button>
+              <button type="button" data-cmd="italic" title="Курсив"><i>К</i></button>
+              <button type="button" data-cmd="underline" title="Подчёркнутый"><u>Ч</u></button>
+              <span class="tb-sep"></span>
+              <button type="button" data-cmd="insertUnorderedList" title="Список">☰</button>
+              <button type="button" data-cmd="insertOrderedList" title="Нумерованный">▤</button>
+              <span class="tb-sep"></span>
+              <button type="button" data-cmd="justifyLeft" title="Влево">◧</button>
+              <button type="button" data-cmd="justifyCenter" title="По центру">◫</button>
+              <button type="button" data-cmd="justifyRight" title="Вправо">◨</button>
+              <span class="tb-sep"></span>
+              <button type="button" data-cmd="link" title="Ссылка">🔗</button>
+              <button type="button" data-cmd="quote" title="Цитата">❝</button>
+              <span class="tb-sep"></span>
+              <button type="button" data-cmd="image" title="Фото">🖼️</button>
+              <button type="button" data-cmd="emoji" title="Смайлики">😀</button>
+            </div>
+            <div class="editor-content" id="replyEditor" contenteditable="true" data-placeholder="Напишите свой ответ…"></div>
+            <input type="file" accept="image/*" id="replyFileInput" multiple style="display:none;">
+          </div>
+        </div>
+        <div class="editor-actions">
+          <button type="button" class="btn" id="attachFilesBtn">📎 Прикрепить файлы</button>
+          <button type="button" class="btn primary" id="replyBtn">↩ Ответить</button>
+        </div>
         <div class="form-msg" id="replyMsg"></div>
       </div>
     `;
+
+    const editor = document.getElementById('replyEditor');
+    const fileInput = document.getElementById('replyFileInput');
+
+    function insertImagesFromFiles(files) {
+      Array.from(files).forEach(file => {
+        if (!file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          editor.focus();
+          document.execCommand('insertImage', false, reader.result);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    document.querySelectorAll('#replyBlock .editor-toolbar button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        editor.focus();
+        const cmd = btn.dataset.cmd;
+        if (cmd === 'link') {
+          const url = prompt('Вставьте ссылку:');
+          if (url) document.execCommand('createLink', false, url);
+        } else if (cmd === 'quote') {
+          document.execCommand('formatBlock', false, 'blockquote');
+        } else if (cmd === 'image') {
+          fileInput.click();
+        } else if (cmd === 'emoji') {
+          openEmojiPicker(btn, (emoji) => {
+            editor.focus();
+            document.execCommand('insertText', false, emoji);
+          });
+        } else {
+          document.execCommand(cmd, false, null);
+        }
+      });
+    });
+
+    document.getElementById('attachFilesBtn').addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', () => { insertImagesFromFiles(fileInput.files); fileInput.value = ''; });
+
     document.getElementById('replyBtn').addEventListener('click', async function() {
-      const replyText = document.getElementById('replyText').value.trim();
+      const html = sanitizeHtml(editor.innerHTML.trim());
+      const plain = editor.textContent.trim();
       const replyMsg = document.getElementById('replyMsg');
-      if (!replyText) {
+      if (!plain && !/<img/i.test(html)) {
         replyMsg.className = 'form-msg err';
-        replyMsg.textContent = 'Напишите текст ответа.';
+        replyMsg.textContent = 'Напишите текст или прикрепите фото.';
         return;
       }
-      const user = Auth.currentUser();
+
       const now = new Date().toLocaleDateString('ru-RU') + ' ' + new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'});
-      const result = await addMessage(topicId, user.username, replyText, now);
+      const result = await addMessage(topicId, user.username, html || plain, now);
       if (result.ok) {
         openTopic(topicId);
       } else {
         replyMsg.className = 'form-msg err';
-        replyMsg.textContent = 'Ошибка отправки ответа';
+        replyMsg.textContent = 'Ошибка отправки';
       }
     });
   }
 
-  async function openTopic(topicId) {
+  window.openTopic = async function(topicId) {
     const messages = await getMessages(topicId);
     if (messages.length === 0) {
-      alert('Тема не найдена');
+      toast('Тема не найдена');
       return;
     }
 
@@ -878,80 +1297,42 @@
       <span>${topic.replies} ответов</span>
     `;
 
-    // === СООБЩЕНИЯ С АВАТАРКАМИ ===
     document.getElementById('postsList').innerHTML = messages.map((msg, i) => {
       const author = msg.author || 'Гость';
       const avatar = getUserAvatar(author);
+      const color = avatarColor(author);
+      const isHtml = msg.text && msg.text.includes('<');
       return `
         <div class="post-item">
           <div class="post-side">
-            ${avatar 
-              ? `<img src="${avatar}" class="post-avatar-img" alt="${escapeHtml(author)}">`
-              : `<div class="post-avatar" style="background:${avatarColor(author)};">${escapeHtml(author.slice(0,1).toUpperCase())}</div>`
-            }
-            <div class="post-author">${escapeHtml(author)}</div>
+            <div class="post-avatar" data-author="${escapeHtml(author)}" style="background:${color};${avatar ? `background-image:url('${avatar}');background-size:cover;background-position:center;` : ''}">
+              ${avatar ? '' : escapeHtml(author.slice(0,1).toUpperCase())}
+            </div>
+            <div class="post-author" data-author="${escapeHtml(author)}">${escapeHtml(author)}</div>
             <div class="post-num">#${i + 1}</div>
           </div>
           <div class="post-body">
             <div class="post-time">${escapeHtml(msg.time || 'недавно')}</div>
-            <div class="post-text">${escapeHtml(msg.text)}</div>
+            ${isHtml ? `<div class="post-text rich">${msg.text}</div>` : `<div class="post-text">${escapeHtml(msg.text)}</div>`}
           </div>
         </div>
       `;
     }).join('');
+
+    document.querySelectorAll('[data-author]').forEach(el => {
+      el.addEventListener('click', function(e) {
+        openProfileCard(this.dataset.author, e);
+      });
+    });
 
     renderReplyBlock(topicId);
 
     document.getElementById('crumbForum').addEventListener('click', showSections);
     document.getElementById('crumbSection').addEventListener('click', showSections);
     document.getElementById('crumbSubforum').addEventListener('click', () => openSubforum(currentSectionKey, currentSubforumKey));
-  }
+  };
 
-  // ===== БОКОВАЯ ПАНЕЛЬ =====
-  function renderSidebar() {
-    const allTopics = currentTopics || [];
-    const rec = allTopics.slice(0, 3);
-    document.getElementById('recommendedList').innerHTML = rec.map(t => `
-      <div class="side-item" onclick="openTopic(${t.id})">
-        ${escapeHtml(t.title)}
-        <div class="info">${t.last} · Ответов: ${t.replies}</div>
-      </div>
-    `).join('') || '<div class="dim" style="padding:4px 0;">Пока нечего показать</div>';
-
-    const sorted = [...allTopics].sort((a, b) => b.replies - a.replies).slice(0, 5);
-    document.getElementById('popularList').innerHTML = sorted.map(t => `
-      <div class="side-item" onclick="openTopic(${t.id})">
-        ${escapeHtml(t.title)}
-        <div class="info">${t.last} · Ответов: ${t.replies}</div>
-      </div>
-    `).join('') || '<div class="dim" style="padding:4px 0;">Пока нечего показать</div>';
-  }
-
-  // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
-  function hideAllViews() {
-    document.getElementById('listView').style.display = 'none';
-    document.getElementById('subforumView').style.display = 'none';
-    document.getElementById('topicView').style.display = 'none';
-  }
-
-  function showSections() {
-    hideAllViews();
-    document.getElementById('listView').style.display = 'block';
-    window.scrollTo(0, 0);
-    renderForum();
-  }
-
-  // ===== ПОИСК =====
-  document.getElementById('searchInput').addEventListener('input', function() {
-    const query = this.value.toLowerCase().trim();
-    const items = document.querySelectorAll('.subforum-row, .topic-list-row');
-    items.forEach(el => {
-      const text = el.textContent.toLowerCase();
-      el.style.display = text.includes(query) ? '' : 'none';
-    });
-  });
-
-  // ===== ЗАКРЫТИЕ МОДАЛКИ =====
+  // === ЗАКРЫТИЕ МОДАЛКИ ===
   document.getElementById('closeModalBtn').addEventListener('click', () => {
     document.getElementById('topicModal').classList.remove('active');
   });
@@ -959,7 +1340,7 @@
     if (e.target === e.currentTarget) document.getElementById('topicModal').classList.remove('active');
   });
 
-  // ===== ЗАПУСК =====
+  window.Auth = Auth;
   window.openTopic = openTopic;
   window.openSubforum = openSubforum;
 
