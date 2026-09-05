@@ -8,7 +8,7 @@
 <style>
   .profile-container {
     display: grid;
-    grid-template-columns: 260px 1fr;
+    grid-template-columns: 280px 1fr;
     gap: 24px;
     margin-top: 20px;
   }
@@ -89,20 +89,6 @@
     margin: 0 0 8px;
     min-height: 20px;
   }
-  .profile-status input {
-    width: 100%;
-    background: var(--bg-inset);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 13px;
-    padding: 8px 12px;
-  }
-  .profile-status input:focus {
-    border-color: var(--lime);
-    outline: none;
-  }
   .profile-stats {
     margin-top: 16px;
     padding-top: 16px;
@@ -166,25 +152,6 @@
     color: var(--text);
   }
 
-  /* Аватарки в сообщениях */
-  .post-avatar-img {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--border-lo);
-  }
-  .post-avatar-img.default {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg-raised);
-    color: var(--text-dim);
-    font-family: var(--font-display);
-    font-size: 18px;
-  }
-
-  /* Скрытый инпут для загрузки */
   #avatarInput {
     display: none;
   }
@@ -208,7 +175,7 @@
       <h1>Профиль</h1>
 
       <div class="profile-container" id="profileContainer">
-        <!-- Будет заполнено JS -->
+        <!-- Заполняется JS -->
       </div>
     </div>
   </section>
@@ -222,11 +189,8 @@
   renderNav('profile.html');
   renderFooter();
 
-  // === ПРОВЕРКА АВТОРИЗАЦИИ ===
   const user = Auth.currentUser();
-  if (!user) {
-    location.href = 'auth.html';
-  }
+  if (!user) location.href = 'auth.html';
 
   const PROFILE_KEY = 'ra_profile_data';
 
@@ -234,13 +198,7 @@
     const raw = localStorage.getItem(PROFILE_KEY);
     const all = raw ? JSON.parse(raw) : {};
     if (!all[username]) {
-      all[username] = {
-        avatar: null, // base64 или null
-        status: 'Всем привет! 🤘',
-        registered: new Date().toLocaleDateString('ru-RU'),
-        messages: 0,
-        reactions: 0
-      };
+      all[username] = { avatar: null, status: 'Всем привет! 🤘', registered: new Date().toLocaleDateString('ru-RU'), messages: 0, reactions: 0 };
       localStorage.setItem(PROFILE_KEY, JSON.stringify(all));
     }
     return all[username];
@@ -270,11 +228,10 @@
         <input type="file" id="avatarInput" accept="image/*">
         
         <h2 class="profile-name">${escapeHtml(user.username)}</h2>
-        <span class="profile-role">${user.role === 'admin' ? 'Администратор' : 'Игрок'}</span>
+        <span class="profile-role">${user.role === 'admin' ? '👑 Администратор' : '🎮 Игрок'}</span>
 
         <div class="profile-status">
           <p class="status-text" id="statusDisplay">${escapeHtml(profile.status || '')}</p>
-          <input type="text" id="statusInput" placeholder="Изменить статус..." maxlength="60" value="${escapeHtml(profile.status || '')}">
         </div>
 
         <div class="profile-stats">
@@ -289,13 +246,14 @@
         </div>
 
         <div class="profile-actions">
-          <button class="btn danger" id="logoutBtn">Выйти</button>
-          <a href="index.html" class="btn">На главную</a>
+          <a href="settings.html" class="btn primary">⚙️ Настройки</a>
+          <button class="btn danger" id="logoutBtn">🚪 Выйти</button>
+          <a href="index.html" class="btn">🏠 На главную</a>
         </div>
       </div>
 
       <div class="profile-content">
-        <h2>Информация</h2>
+        <h2>📋 Информация</h2>
         <div class="info-grid">
           <div class="info-item">
             <div class="label">Имя пользователя</div>
@@ -313,6 +271,10 @@
             <div class="label">IGN (игровой ник)</div>
             <div class="value">${user.ign || user.username}</div>
           </div>
+          <div class="info-item" style="grid-column: 1 / -1;">
+            <div class="label">Статус</div>
+            <div class="value" style="font-style:italic;color:var(--text-dim);">${escapeHtml(profile.status || 'Не указан')}</div>
+          </div>
         </div>
       </div>
     `;
@@ -321,9 +283,7 @@
     const avatarWrap = document.getElementById('avatarWrap');
     const avatarInput = document.getElementById('avatarInput');
 
-    avatarWrap.addEventListener('click', () => {
-      avatarInput.click();
-    });
+    avatarWrap.addEventListener('click', () => avatarInput.click());
 
     avatarInput.addEventListener('change', function(e) {
       const file = this.files[0];
@@ -335,22 +295,8 @@
         profileData.avatar = base64;
         saveProfileData(user.username, profileData);
         renderProfile();
-        // Обновляем аватарки в форуме
-        updateForumAvatars();
       };
       reader.readAsDataURL(file);
-    });
-
-    // === СТАТУС ===
-    const statusInput = document.getElementById('statusInput');
-    const statusDisplay = document.getElementById('statusDisplay');
-
-    statusInput.addEventListener('change', function() {
-      const newStatus = this.value.trim();
-      const profileData = getProfileData(user.username);
-      profileData.status = newStatus || 'Всем привет! 🤘';
-      saveProfileData(user.username, profileData);
-      statusDisplay.textContent = profileData.status;
     });
 
     // === ВЫХОД ===
@@ -359,34 +305,6 @@
       location.href = 'index.html';
     });
   }
-
-  // === ОБНОВЛЕНИЕ АВАТАРОК В ФОРУМЕ ===
-  function updateForumAvatars() {
-    // Просто перезагружаем страницу форума если она открыта
-    // Аватарки подтянутся автоматически при следующем открытии темы
-    console.log('🔄 Аватарки обновлены');
-  }
-
-  // === ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ АВАТАРКИ (используется в forum.html) ===
-  window.getUserAvatar = function(username) {
-    const raw = localStorage.getItem(PROFILE_KEY);
-    if (!raw) return null;
-    const all = JSON.parse(raw);
-    if (all[username] && all[username].avatar) {
-      return all[username].avatar;
-    }
-    return null;
-  };
-
-  window.getUserStatus = function(username) {
-    const raw = localStorage.getItem(PROFILE_KEY);
-    if (!raw) return null;
-    const all = JSON.parse(raw);
-    if (all[username] && all[username].status) {
-      return all[username].status;
-    }
-    return null;
-  };
 
   renderProfile();
 </script>
