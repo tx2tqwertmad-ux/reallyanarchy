@@ -20,7 +20,6 @@ function renderNav(activePage) {
 
   let rightHtml;
   if (user) {
-    // Получаем аватарку
     let avatarHtml = '';
     try {
       const raw = localStorage.getItem('ra_profile_data');
@@ -38,14 +37,14 @@ function renderNav(activePage) {
     rightHtml = `
       <div class="user-menu" style="display:flex;align-items:center;gap:12px;position:relative;">
         <!-- КОЛОКОЛЬЧИК -->
-        <button class="notif-btn" id="notifBtn" style="background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer;position:relative;padding:4px;">
-          🔔
-          <span id="notifBadge" style="position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:10px;border-radius:50%;width:18px;height:18px;display:none;align-items:center;justify-content:center;font-weight:700;">0</span>
+        <button class="notif-btn" id="notifBtn" style="background:none;border:none;cursor:pointer;padding:4px;position:relative;">
+          <img src="bell_32x32.png" alt="Уведомления" style="width:28px;height:28px;filter:brightness(0.7);transition:filter 0.2s;">
+          <span id="notifBadge" style="position:absolute;top:-2px;right:-4px;background:var(--red);color:#fff;font-size:10px;border-radius:50%;width:18px;height:18px;display:none;align-items:center;justify-content:center;font-weight:700;">0</span>
         </button>
 
         <!-- КОНВЕРТ -->
-        <button class="msg-btn" id="msgBtn" style="background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer;padding:4px;">
-          ✉️
+        <button class="msg-btn" id="msgBtn" style="background:none;border:none;cursor:pointer;padding:4px;">
+          <img src="envelope_32x32.png" alt="Сообщения" style="width:28px;height:28px;filter:brightness(0.7);transition:filter 0.2s;">
         </button>
 
         <!-- АВАТАР + НИК -->
@@ -62,6 +61,9 @@ function renderNav(activePage) {
           </a>
           <a href="settings.html" style="display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--text);text-decoration:none;transition:background 0.15s;">
             <span>⚙️</span> Настройки
+          </a>
+          <a href="privacy.html" style="display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--text);text-decoration:none;transition:background 0.15s;">
+            <span>🔐</span> Конфиденциальность
           </a>
           ${user.role === 'admin' ? `<a href="admin.html" style="display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--lime);text-decoration:none;transition:background 0.15s;">
             <span>🛠️</span> Админ-панель
@@ -101,7 +103,6 @@ function renderNav(activePage) {
     </header>
   `;
 
-  // === СОБЫТИЯ ===
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => { 
@@ -110,39 +111,32 @@ function renderNav(activePage) {
     });
   }
 
-  // Выпадающее меню
   const trigger = document.getElementById('userDropdownTrigger');
   const dropdown = document.getElementById('userDropdown');
   if (trigger && dropdown) {
     trigger.addEventListener('click', (e) => {
       e.stopPropagation();
-      const isOpen = dropdown.style.display === 'block';
-      dropdown.style.display = isOpen ? 'none' : 'block';
-      // Закрываем другие
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
       const notifDrop = document.getElementById('notifDropdown');
       if (notifDrop) notifDrop.style.display = 'none';
     });
   }
 
-  // Колокольчик
   const notifBtn = document.getElementById('notifBtn');
   const notifDrop = document.getElementById('notifDropdown');
   if (notifBtn && notifDrop) {
     notifBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const isOpen = notifDrop.style.display === 'block';
-      notifDrop.style.display = isOpen ? 'none' : 'block';
+      notifDrop.style.display = notifDrop.style.display === 'block' ? 'none' : 'block';
       if (dropdown) dropdown.style.display = 'none';
     });
   }
 
-  // Закрытие при клике вне
   document.addEventListener('click', () => {
     if (dropdown) dropdown.style.display = 'none';
     if (notifDrop) notifDrop.style.display = 'none';
   });
 
-  // Конверт (временное уведомление)
   const msgBtn = document.getElementById('msgBtn');
   if (msgBtn) {
     msgBtn.addEventListener('click', () => {
