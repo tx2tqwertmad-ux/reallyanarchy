@@ -38,7 +38,6 @@
   a:hover{color:var(--ore);}
   ::selection{background:var(--ore);color:#141400;}
 
-  /* Переопределяем для совместимости с твоей шапкой */
   .btn{display:inline-block;background:var(--bg-raised);border:1px solid var(--border);color:var(--text);font-family:var(--font-body);font-weight:700;font-size:13px;padding:10px 16px;cursor:pointer;transition:border-color .15s, transform .05s;white-space:nowrap;}
   .btn:hover{border-color:var(--ore);}
   .btn:active{transform:translateY(1px);}
@@ -47,6 +46,26 @@
   .btn.block{width:100%;text-align:center;}
   .btn.small{padding:6px 10px;font-size:12px;}
   .btn[disabled]{opacity:.55;cursor:not-allowed;}
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-dim);
+    font-size: 13px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+  }
+  .back-link:hover {
+    color: var(--ore);
+    background: rgba(242,183,5,0.06);
+  }
 
   input[type=text], textarea, select{background:var(--bg-inset);border:1px solid var(--border);color:var(--text);font-family:var(--font-body);font-size:14px;padding:10px 12px;width:100%;}
   input[type=text]:focus, textarea:focus, select:focus{outline:none;border-color:var(--diamond);}
@@ -235,7 +254,7 @@
   .post-body .post-text.rich{white-space:normal;}
   .post-body .post-text.rich blockquote{border-left:3px solid var(--ore);padding-left:10px;margin:8px 0;color:var(--text-dim);}
   .post-body .post-text.rich ul, .post-body .post-text.rich ol{padding-left:22px;margin:6px 0;}
-  .post-body img.msg-image{max-width:100%;max-height:340px;display:block;margin-top:10px;border:1px solid var(--border);}
+  .post-body img.msg-image{max-width:100%;max-height:340px;display:block;margin-top:10px;border:1px solid var(--border);border-radius:var(--radius);}
 
   .reply-area{margin-top:20px;padding-top:18px;border-top:1px solid var(--border);}
   .guest-lock{background:var(--bg-panel);border:1px dashed var(--border);padding:18px;text-align:center;color:var(--text-dim);font-size:13px;margin-top:20px;}
@@ -258,12 +277,14 @@
   .composer-toolbar button:hover{border-color:var(--ore);}
   .composer-attach-input{display:none;}
   .composer-image-preview{position:relative;display:inline-block;margin-top:10px;}
-  .composer-image-preview img{max-width:150px;max-height:110px;display:block;border:1px solid var(--border);}
+  .composer-image-preview img{max-width:150px;max-height:110px;display:block;border:1px solid var(--border);border-radius:var(--radius);}
   .composer-image-preview .remove-img{position:absolute;top:-9px;right:-9px;background:var(--danger);color:#fff;border:none;width:20px;height:20px;font-size:12px;cursor:pointer;line-height:1;border-radius:50%;}
 
-  .emoji-picker{position:fixed;z-index:1250;background:var(--bg-panel);border:1px solid var(--border);border-top:3px solid var(--ore);padding:10px;width:272px;max-height:230px;overflow-y:auto;display:grid;grid-template-columns:repeat(8,1fr);gap:2px;}
-  .emoji-picker span{cursor:pointer;font-size:18px;text-align:center;padding:4px 0;}
-  .emoji-picker span:hover{background:var(--bg-raised);}
+  .topic-modal{display:none;position:fixed;inset:0;background:rgba(6,7,4,0.88);z-index:1000;align-items:flex-start;justify-content:center;padding:6vh 16px;overflow-y:auto;}
+  .topic-modal.active{display:flex;}
+  .topic-modal-content{background:var(--bg-panel);border:1px solid var(--border);border-top:4px solid var(--ore);padding:26px;max-width:560px;width:100%;}
+  .topic-modal-content .close-modal{float:right;background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;line-height:1;font-family:var(--font-body);}
+  .topic-modal-content .close-modal:hover{color:var(--ore);}
 
   .profile-card{position:fixed;z-index:1300;width:300px;background:var(--bg-panel);border:1px solid var(--border);border-top:3px solid var(--ore);box-shadow:0 16px 34px rgba(0,0,0,0.55);display:none;border-radius:var(--radius);}
   .profile-card.active{display:block;}
@@ -293,12 +314,6 @@
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--bg-raised);border:1px solid var(--ore);color:var(--text);padding:10px 20px;font-size:13px;z-index:1400;display:none;border-radius:var(--radius);}
   .toast.active{display:block;}
 
-  .topic-modal{display:none;position:fixed;inset:0;background:rgba(6,7,4,0.88);z-index:1000;align-items:flex-start;justify-content:center;padding:6vh 16px;overflow-y:auto;}
-  .topic-modal.active{display:flex;}
-  .topic-modal-content{background:var(--bg-panel);border:1px solid var(--border);border-top:4px solid var(--ore);padding:26px;max-width:560px;width:100%;}
-  .topic-modal-content .close-modal{float:right;background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;line-height:1;font-family:var(--font-body);}
-  .topic-modal-content .close-modal:hover{color:var(--ore);}
-
   @media (max-width:820px){
     .layout{grid-template-columns:1fr;}
     .subforum-row{grid-template-columns:1fr auto;}
@@ -315,7 +330,6 @@
 </head>
 <body>
 
-<!-- ===== ТВОЯ ШАПКА (через nav.js) ===== -->
 <div id="nav-root"></div>
 
 <main>
@@ -357,6 +371,7 @@
   </div>
 
   <div id="subforumView">
+    <button class="back-link" id="backFromSubforum">← Назад к форумам</button>
     <div class="breadcrumb" id="subforumBreadcrumb"></div>
     <div class="subforum-head">
       <h2 id="subforumTitleEl"></h2>
@@ -377,6 +392,7 @@
   </div>
 
   <div id="topicView">
+    <button class="back-link" id="backFromTopic">← Назад</button>
     <div class="breadcrumb" id="topicBreadcrumb"></div>
     <div class="topic-page-head">
       <h2 id="topicTitleEl"></h2>
@@ -394,10 +410,8 @@
   </div>
 </main>
 
-<!-- ===== ТВОЙ ФУТЕР (через nav.js) ===== -->
 <div id="footer-root"></div>
 
-<!-- КАРТОЧКА ПРОФИЛЯ -->
 <div class="profile-card" id="profileCard"></div>
 <div class="toast" id="toast"></div>
 
@@ -407,19 +421,6 @@
 (function(){
   const API_URL = window.location.origin + '/api';
   const FORUM_KEY = 'ra_forum_v4';
-
-  // === ЭМОДЗИ ===
-  const EMOJI_LIST = [
-    '😀','😁','😂','🤣','😊','😇','🙂','🙃','😉','😍','🥰','😘','😜','🤪','😎','🤩',
-    '🥳','😏','😴','🤔','🤨','😐','😑','😒','🙄','😬','😢','😭','😤','😠','😡','🤯',
-    '😱','😨','😰','🥵','🥶','🤢','🤮','🤒','🤕','🤠','🥸','😷','🤐','😶','😳','🥴',
-    '👍','👎','👏','🙌','🙏','💪','🤝','👋','✌️','🤞','🤟','🤙','👌','🖕','✊','🫡',
-    '❤️','🧡','💛','💚','💙','💜','🖤','🤍','💔','💯','🔥','✨','⭐','⚡','💥','💫',
-    '🎉','🎊','🏆','🥇','🎁','🎮','🕹️','🎯','🎲','🃏','🧩','🛡️','⚔️','🪓','🏹','💣',
-    '🍕','🍔','🍟','🌭','🍗','🍖','🥩','🍞','🧀','🍩','🍪','🍫','🍦','☕','🍺','🥤',
-    '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐸','🐵','🐷','🐔','🐺','🐴','🐲','🐍',
-    '🚀','🛸','🚗','🏠','🏰','🌲','🌋','🌊','⛏️','🧱','💎','🪙','⏰','📦','📌','💀'
-  ];
 
   function escapeHtml(str) {
     const d = document.createElement('div');
@@ -434,7 +435,6 @@
     return colors[h % colors.length];
   }
 
-  // === ПОЛУЧЕНИЕ АВАТАРКИ ИЗ ПРОФИЛЯ ===
   function getUserAvatar(username) {
     try {
       const raw = localStorage.getItem('ra_profile_data');
@@ -453,46 +453,6 @@
     t.classList.add('active');
     clearTimeout(t._timer);
     t._timer = setTimeout(() => t.classList.remove('active'), 2400);
-  }
-
-  function closeEmojiPicker() {
-    const ex = document.getElementById('activeEmojiPicker');
-    if (ex) ex.remove();
-  }
-
-  function openEmojiPicker(btn, onPick) {
-    closeEmojiPicker();
-    const picker = document.createElement('div');
-    picker.className = 'emoji-picker';
-    picker.id = 'activeEmojiPicker';
-    picker.innerHTML = EMOJI_LIST.map(e => `<span>${e}</span>`).join('');
-    document.body.appendChild(picker);
-
-    const rect = btn.getBoundingClientRect();
-    let top = rect.bottom + 6;
-    let left = rect.left;
-    const pw = 272;
-    if (left + pw > window.innerWidth - 10) left = window.innerWidth - pw - 10;
-    if (top + 230 > window.innerHeight) top = Math.max(10, rect.top - 236);
-    picker.style.top = top + 'px';
-    picker.style.left = left + 'px';
-
-    picker.querySelectorAll('span').forEach(span => {
-      span.addEventListener('click', (e) => {
-        e.stopPropagation();
-        onPick(span.textContent);
-        picker.remove();
-      });
-    });
-
-    setTimeout(() => {
-      document.addEventListener('click', function handler(ev) {
-        if (!picker.contains(ev.target) && ev.target !== btn) {
-          picker.remove();
-          document.removeEventListener('click', handler);
-        }
-      });
-    }, 0);
   }
 
   function sanitizeHtml(html) {
@@ -852,6 +812,9 @@
 
     document.getElementById('crumbForumFromSub').addEventListener('click', showSections);
 
+    // Кнопка "Назад"
+    document.getElementById('backFromSubforum').addEventListener('click', showSections);
+
     renderTopicsWithPagination(topics, 1);
   }
 
@@ -969,6 +932,9 @@
       `;
       modal.classList.add('active');
 
+      // Добавляем кнопку загрузки фото для формы
+      const composer = attachComposer(document.getElementById('cf_0'));
+
       document.getElementById('customTopicForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const msgEl = document.getElementById('topicMsg');
@@ -1017,6 +983,9 @@
     `;
     modal.classList.add('active');
 
+    // Добавляем кнопку загрузки фото
+    const composer = attachComposer(document.getElementById('topicText'));
+
     document.getElementById('newTopicForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const title = document.getElementById('topicTitle').value.trim();
@@ -1047,6 +1016,51 @@
     });
   }
 
+  // === КОМПОЗЕР ДЛЯ ФОТО ===
+  function attachComposer(textarea) {
+    const toolbar = document.createElement('div');
+    toolbar.className = 'composer-toolbar';
+    toolbar.innerHTML = `
+      <button type="button" class="btn-attach">📎 Прикрепить фото</button>
+      <input type="file" accept="image/*" class="composer-attach-input">
+    `;
+    textarea.insertAdjacentElement('afterend', toolbar);
+    const previewWrap = document.createElement('div');
+    toolbar.insertAdjacentElement('afterend', previewWrap);
+
+    let attachedImage = null;
+    const attachBtn = toolbar.querySelector('.btn-attach');
+    const fileInput = toolbar.querySelector('.composer-attach-input');
+
+    attachBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) { toast('Можно прикреплять только изображения'); return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        attachedImage = reader.result;
+        previewWrap.innerHTML = `
+          <div class="composer-image-preview">
+            <img src="${attachedImage}">
+            <button type="button" class="remove-img">×</button>
+          </div>
+        `;
+        previewWrap.querySelector('.remove-img').addEventListener('click', () => {
+          attachedImage = null;
+          previewWrap.innerHTML = '';
+          fileInput.value = '';
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    return {
+      getImage: () => attachedImage,
+      clear: () => { attachedImage = null; previewWrap.innerHTML = ''; fileInput.value = ''; }
+    };
+  }
+
   // === КАРТОЧКА ПРОФИЛЯ ===
   function computeMessageCount(username) {
     let count = 0;
@@ -1059,7 +1073,6 @@
   window.openProfileCard = function(username, event) {
     if (!event) return;
     event.stopPropagation();
-    closeEmojiPicker();
     const card = document.getElementById('profileCard');
     const avatar = getUserAvatar(username);
     const color = avatarColor(username);
@@ -1186,7 +1199,6 @@
               <button type="button" data-cmd="quote" title="Цитата">❝</button>
               <span class="tb-sep"></span>
               <button type="button" data-cmd="image" title="Фото">🖼️</button>
-              <button type="button" data-cmd="emoji" title="Смайлики">😀</button>
             </div>
             <div class="editor-content" id="replyEditor" contenteditable="true" data-placeholder="Напишите свой ответ…"></div>
             <input type="file" accept="image/*" id="replyFileInput" multiple style="display:none;">
@@ -1227,11 +1239,6 @@
           document.execCommand('formatBlock', false, 'blockquote');
         } else if (cmd === 'image') {
           fileInput.click();
-        } else if (cmd === 'emoji') {
-          openEmojiPicker(btn, (emoji) => {
-            editor.focus();
-            document.execCommand('insertText', false, emoji);
-          });
         } else {
           document.execCommand(cmd, false, null);
         }
@@ -1326,6 +1333,11 @@
     });
 
     renderReplyBlock(topicId);
+
+    // Кнопка "Назад"
+    document.getElementById('backFromTopic').addEventListener('click', () => {
+      openSubforum(currentSectionKey, currentSubforumKey);
+    });
 
     document.getElementById('crumbForum').addEventListener('click', showSections);
     document.getElementById('crumbSection').addEventListener('click', showSections);
