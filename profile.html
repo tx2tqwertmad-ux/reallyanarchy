@@ -247,6 +247,8 @@
 
         <div class="profile-actions">
           <a href="settings.html" class="btn primary">⚙️ Настройки</a>
+          <a href="privacy.html" class="btn">🔐 Конфиденциальность</a>
+          <a href="security.html" class="btn">🔒 Безопасность</a>
           <button class="btn danger" id="logoutBtn">🚪 Выйти</button>
           <a href="index.html" class="btn">🏠 На главную</a>
         </div>
@@ -300,10 +302,13 @@
     });
 
     // === ВЫХОД ===
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      Auth.logout();
-      location.href = 'index.html';
-    });
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        Auth.logout();
+        location.href = 'index.html';
+      });
+    }
   }
 
   renderProfile();
