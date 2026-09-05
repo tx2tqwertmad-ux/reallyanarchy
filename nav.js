@@ -65,6 +65,9 @@ function renderNav(activePage) {
           <a href="privacy.html" style="display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--text);text-decoration:none;transition:background 0.15s;">
             <span>🔐</span> Конфиденциальность
           </a>
+          <a href="security.html" style="display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--text);text-decoration:none;transition:background 0.15s;">
+            <span>🔒</span> Безопасность
+          </a>
           ${user.role === 'admin' ? `<a href="admin.html" style="display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--lime);text-decoration:none;transition:background 0.15s;">
             <span>🛠️</span> Админ-панель
           </a>` : ''}
