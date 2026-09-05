@@ -63,8 +63,7 @@
   }
   .settings-content input[type="text"],
   .settings-content input[type="password"],
-  .settings-content input[type="email"],
-  .settings-content select {
+  .settings-content input[type="email"] {
     width: 100%;
     background: var(--bg-inset);
     border: 1px solid var(--border);
@@ -138,8 +137,8 @@
         <div class="settings-sidebar">
           <a href="profile.html">👤 Профиль</a>
           <a href="settings.html" class="active">⚙️ Настройки</a>
-          <a href="#" id="securityLink">🔒 Безопасность</a>
-          <a href="#" id="privacyLink">🔐 Конфиденциальность</a>
+          <a href="privacy.html">🔐 Конфиденциальность</a>
+          <a href="security.html">🔒 Безопасность</a>
         </div>
 
         <div class="settings-content">
@@ -236,13 +235,11 @@
 
   const profile = getProfileData(user.username);
 
-  // === ЗАГРУЗКА ДАННЫХ ===
   document.getElementById('settingsUsername').value = user.username;
   document.getElementById('settingsRole').value = user.role === 'admin' ? 'Администратор' : 'Игрок';
   document.getElementById('settingsStatus').value = profile.status || '';
   document.getElementById('settingsIgn').value = user.ign || user.username;
 
-  // === АВАТАРКА ===
   const avatarContainer = document.getElementById('avatarPreviewContainer');
   function renderAvatar() {
     const profileData = getProfileData(user.username);
@@ -268,7 +265,6 @@
     reader.readAsDataURL(file);
   });
 
-  // === СОХРАНЕНИЕ ===
   document.getElementById('saveSettingsBtn').addEventListener('click', function() {
     const msgEl = document.getElementById('settingsMsg');
     const status = document.getElementById('settingsStatus').value.trim();
@@ -277,12 +273,10 @@
     const newPass = document.getElementById('newPassword').value;
     const confirmPass = document.getElementById('confirmPassword').value;
 
-    // Обновляем профиль
     const profileData = getProfileData(user.username);
     profileData.status = status || 'Всем привет! 🤘';
     saveProfileData(user.username, profileData);
 
-    // Обновляем IGN в users (через localStorage для совместимости)
     try {
       const usersRaw = localStorage.getItem('ra_db_v1');
       if (usersRaw) {
@@ -295,7 +289,6 @@
       }
     } catch(e) {}
 
-    // Смена пароля
     if (currentPass || newPass || confirmPass) {
       if (!currentPass) {
         msgEl.className = 'form-msg err';
@@ -313,7 +306,6 @@
         return;
       }
 
-      // Проверяем текущий пароль (для демо — через localStorage)
       try {
         const usersRaw = localStorage.getItem('ra_db_v1');
         if (usersRaw) {
@@ -341,7 +333,6 @@
       msgEl.textContent = '✅ Настройки сохранены!';
     }
 
-    // Очищаем поля пароля
     document.getElementById('currentPassword').value = '';
     document.getElementById('newPassword').value = '';
     document.getElementById('confirmPassword').value = '';
@@ -350,16 +341,6 @@
       msgEl.className = 'form-msg';
       msgEl.textContent = '';
     }, 3000);
-  });
-
-  // === ЗАГЛУШКИ ===
-  document.getElementById('securityLink').addEventListener('click', (e) => {
-    e.preventDefault();
-    alert('🔒 Раздел безопасности будет доступен в следующем обновлении!');
-  });
-  document.getElementById('privacyLink').addEventListener('click', (e) => {
-    e.preventDefault();
-    alert('🔐 Раздел конфиденциальности будет доступен в следующем обновлении!');
   });
 </script>
 </body>
