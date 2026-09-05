@@ -117,6 +117,42 @@
   #avatarInput {
     display: none;
   }
+  .theme-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 16px;
+    background: var(--bg-inset);
+    border-radius: var(--radius);
+    border: 2px solid var(--border);
+    transition: border-color 0.2s;
+  }
+  .theme-option:hover {
+    border-color: var(--lime);
+  }
+  .theme-option input[type="radio"] {
+    accent-color: var(--lime);
+    width: 18px;
+    height: 18px;
+  }
+  .theme-option .preview {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+  }
+  .theme-option .preview-default { background: #16171a; border-color: #f7b733; }
+  .theme-option .preview-light { background: #f5f5f0; border-color: #d4a017; }
+  .theme-option .preview-autumn { background: #2d1a0a; border-color: #d4a76a; }
+
+  .theme-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
 
   @media (max-width: 720px) {
     .settings-container {
@@ -194,7 +230,30 @@
               <input type="password" id="confirmPassword" placeholder="Подтвердите новый пароль">
             </div>
 
-            <button class="btn primary" id="saveSettingsBtn">💾 Сохранить настройки</button>
+            <div style="border-top:1px solid var(--border-lo);margin:20px 0;"></div>
+
+            <h3 style="font-size:13px;color:var(--lime);margin-bottom:16px;">🎨 Тема оформления</h3>
+
+            <div class="theme-list">
+              <label class="theme-option">
+                <input type="radio" name="theme" value="default" checked>
+                <span class="preview preview-default"></span>
+                🌙 Оригинальная
+              </label>
+              <label class="theme-option">
+                <input type="radio" name="theme" value="light">
+                <span class="preview preview-light"></span>
+                ☀️ Светлая
+              </label>
+              <label class="theme-option">
+                <input type="radio" name="theme" value="autumn">
+                <span class="preview preview-autumn"></span>
+                🍂 Осенняя
+              </label>
+            </div>
+
+            <button class="btn primary" id="applyThemeBtn">🎨 Применить тему</button>
+            <button class="btn primary" id="saveSettingsBtn" style="margin-top:16px;">💾 Сохранить настройки</button>
             <div class="form-msg" id="settingsMsg"></div>
           </div>
         </div>
@@ -240,6 +299,7 @@
   document.getElementById('settingsStatus').value = profile.status || '';
   document.getElementById('settingsIgn').value = user.ign || user.username;
 
+  // === АВАТАРКА ===
   const avatarContainer = document.getElementById('avatarPreviewContainer');
   function renderAvatar() {
     const profileData = getProfileData(user.username);
@@ -265,6 +325,104 @@
     reader.readAsDataURL(file);
   });
 
+  // === ТЕМЫ ===
+  function getCurrentTheme() {
+    return localStorage.getItem('ra_theme') || 'default';
+  }
+
+  function applyTheme(theme) {
+    const body = document.body;
+    body.classList.remove('theme-default', 'theme-light', 'theme-autumn');
+    body.classList.add('theme-' + theme);
+    localStorage.setItem('ra_theme', theme);
+    
+    if (theme === 'autumn') {
+      startAutumnLeaves();
+    } else {
+      stopAutumnLeaves();
+    }
+  }
+
+  const currentTheme = getCurrentTheme();
+  document.querySelectorAll('input[name="theme"]').forEach(el => {
+    if (el.value === currentTheme) el.checked = true;
+  });
+  applyTheme(currentTheme);
+
+  document.getElementById('applyThemeBtn').addEventListener('click', function() {
+    const selected = document.querySelector('input[name="theme"]:checked');
+    if (selected) {
+      applyTheme(selected.value);
+      const msgEl = document.getElementById('settingsMsg');
+      msgEl.className = 'form-msg ok';
+      msgEl.textContent = '✅ Тема изменена! Страница обновится...';
+      setTimeout(() => location.reload(), 800);
+    }
+  });
+
+  // === ОСЕННИЕ ЛИСТЬЯ ===
+  let leafInterval = null;
+
+  function startAutumnLeaves() {
+    document.querySelectorAll('.autumn-leaf').forEach(el => el.remove());
+    if (leafInterval) clearInterval(leafInterval);
+    
+    const colors = ['#c0392b', '#e67e22', '#d4a76a', '#8e44ad', '#e74c3c', '#f39c12'];
+    
+    function createLeaf() {
+      const leaf = document.createElement('div');
+      leaf.className = 'autumn-leaf';
+      const size = 14 + Math.random() * 20;
+      const startX = Math.random() * 100;
+      const delay = Math.random() * 8;
+      const duration = 6 + Math.random() * 10;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      leaf.style.cssText = `
+        position: fixed;
+        top: -30px;
+        left: ${startX}%;
+        width: ${size}px;
+        height: ${size}px;
+        background: ${color};
+        border-radius: 0 50% 50% 50%;
+        transform: rotate(${Math.random() * 360}deg);
+        opacity: 0.8;
+        pointer-events: none;
+        z-index: 9999;
+        animation: autumnFall ${duration}s linear ${delay}s infinite;
+      `;
+      document.body.appendChild(leaf);
+      
+      setTimeout(() => {
+        if (leaf.parentNode) leaf.remove();
+      }, (duration + delay) * 1000 + 500);
+    }
+    
+    for (let i = 0; i < 15; i++) {
+      setTimeout(() => createLeaf(), i * 400);
+    }
+    
+    leafInterval = setInterval(() => {
+      if (document.querySelectorAll('.autumn-leaf').length < 30) {
+        createLeaf();
+      }
+    }, 2000);
+  }
+
+  function stopAutumnLeaves() {
+    if (leafInterval) {
+      clearInterval(leafInterval);
+      leafInterval = null;
+    }
+    document.querySelectorAll('.autumn-leaf').forEach(el => el.remove());
+  }
+
+  if (getCurrentTheme() === 'autumn') {
+    setTimeout(startAutumnLeaves, 500);
+  }
+
+  // === СОХРАНЕНИЕ ===
   document.getElementById('saveSettingsBtn').addEventListener('click', function() {
     const msgEl = document.getElementById('settingsMsg');
     const status = document.getElementById('settingsStatus').value.trim();
