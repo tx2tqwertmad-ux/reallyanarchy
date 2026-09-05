@@ -20,12 +20,72 @@ function renderNav(activePage) {
 
   let rightHtml;
   if (user) {
+    // Получаем аватарку
+    let avatarHtml = '';
+    try {
+      const raw = localStorage.getItem('ra_profile_data');
+      if (raw) {
+        const all = JSON.parse(raw);
+        if (all[user.username] && all[user.username].avatar) {
+          avatarHtml = `<img src="${all[user.username].avatar}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--lime);">`;
+        }
+      }
+    } catch(e) {}
+    if (!avatarHtml) {
+      avatarHtml = `<div style="width:32px;height:32px;border-radius:50%;background:var(--lime);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:14px;color:#141400;font-weight:700;">${user.username.charAt(0).toUpperCase()}</div>`;
+    }
+
     rightHtml = `
-      <a href="profile.html" style="color:var(--text);font-size:13px;text-decoration:none;display:flex;align-items:center;gap:8px;">
-        ${escapeHtml(user.username)}${user.role==='admin' ? ' <span class="badge admin">admin</span>' : ''}
-      </a>
-      ${user.role==='admin' ? '<a href="admin.html" class="btn small">Админ-панель</a>' : ''}
-      <button class="btn small" id="logoutBtn">Выйти</button>
+      <div class="user-menu" style="display:flex;align-items:center;gap:12px;position:relative;">
+        <!-- КОЛОКОЛЬЧИК -->
+        <button class="notif-btn" id="notifBtn" style="background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer;position:relative;padding:4px;">
+          🔔
+          <span id="notifBadge" style="position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:10px;border-radius:50%;width:18px;height:18px;display:none;align-items:center;justify-content:center;font-weight:700;">0</span>
+        </button>
+
+        <!-- КОНВЕРТ -->
+        <button class="msg-btn" id="msgBtn" style="background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer;padding:4px;">
+          ✉️
+        </button>
+
+        <!-- АВАТАР + НИК -->
+        <div class="user-dropdown-trigger" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 8px;border-radius:var(--radius);transition:background 0.2s;" id="userDropdownTrigger">
+          ${avatarHtml}
+          <span style="color:var(--text);font-size:13px;font-weight:600;">${escapeHtml(user.username)}</span>
+          <span style="color:var(--text-dim);font-size:10px;">▼</span>
+        </div>
+
+        <!-- ВЫПАДАЮЩЕЕ МЕНЮ -->
+        <div class="user-dropdown" id="userDropdown" style="display:none;position:absolute;top:100%;right:0;margin-top:8px;background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);min-width:220px;padding:8px 0;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,0.6);">
+          <a href="profile.html" style="display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--text);text-decoration:none;transition:background 0.15s;">
+            <span>👤</span> Мой профиль
+          </a>
+          <a href="settings.html" style="display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--text);text-decoration:none;transition:background 0.15s;">
+            <span>⚙️</span> Настройки
+          </a>
+          ${user.role === 'admin' ? `<a href="admin.html" style="display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--lime);text-decoration:none;transition:background 0.15s;">
+            <span>🛠️</span> Админ-панель
+          </a>` : ''}
+          <div style="border-top:1px solid var(--border-lo);margin:4px 0;"></div>
+          <button id="logoutBtn" style="display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--danger);background:none;border:none;width:100%;text-align:left;cursor:pointer;font-family:var(--font-body);font-size:13px;transition:background 0.15s;">
+            <span>🚪</span> Выйти
+          </button>
+        </div>
+      </div>
+
+      <!-- ОПОВЕЩЕНИЯ -->
+      <div class="notif-dropdown" id="notifDropdown" style="display:none;position:absolute;top:100%;right:0;margin-top:8px;background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);min-width:280px;max-width:320px;padding:12px 16px;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,0.6);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span style="font-weight:700;color:var(--text);font-size:14px;">Уведомления</span>
+          <span style="color:var(--text-dim);font-size:11px;cursor:pointer;" id="markAllRead">Отметить все</span>
+        </div>
+        <div id="notifList" style="max-height:300px;overflow-y:auto;">
+          <div style="color:var(--text-dim);font-size:13px;text-align:center;padding:16px 0;">Нет новых уведомлений</div>
+        </div>
+        <div style="border-top:1px solid var(--border-lo);margin-top:10px;padding-top:10px;">
+          <a href="#" style="color:var(--text-dim);font-size:12px;text-decoration:none;">Показать все</a>
+        </div>
+      </div>
     `;
   } else {
     rightHtml = `<a href="auth.html" class="btn small primary">Войти / Регистрация</a>`;
@@ -36,16 +96,57 @@ function renderNav(activePage) {
       <div class="wrap nav-row">
         <a href="index.html" class="brand"><span class="dot"></span>REALLY<span class="tag">ANARCHY</span></a>
         <nav class="links">${linksHtml}</nav>
-        <div class="nav-right">${rightHtml}</div>
+        <div class="nav-right" style="position:relative;">${rightHtml}</div>
       </div>
     </header>
   `;
 
+  // === СОБЫТИЯ ===
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => { 
       Auth.logout(); 
       location.href = 'index.html'; 
+    });
+  }
+
+  // Выпадающее меню
+  const trigger = document.getElementById('userDropdownTrigger');
+  const dropdown = document.getElementById('userDropdown');
+  if (trigger && dropdown) {
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = dropdown.style.display === 'block';
+      dropdown.style.display = isOpen ? 'none' : 'block';
+      // Закрываем другие
+      const notifDrop = document.getElementById('notifDropdown');
+      if (notifDrop) notifDrop.style.display = 'none';
+    });
+  }
+
+  // Колокольчик
+  const notifBtn = document.getElementById('notifBtn');
+  const notifDrop = document.getElementById('notifDropdown');
+  if (notifBtn && notifDrop) {
+    notifBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = notifDrop.style.display === 'block';
+      notifDrop.style.display = isOpen ? 'none' : 'block';
+      if (dropdown) dropdown.style.display = 'none';
+    });
+  }
+
+  // Закрытие при клике вне
+  document.addEventListener('click', () => {
+    if (dropdown) dropdown.style.display = 'none';
+    if (notifDrop) notifDrop.style.display = 'none';
+  });
+
+  // Конверт (временное уведомление)
+  const msgBtn = document.getElementById('msgBtn');
+  if (msgBtn) {
+    msgBtn.addEventListener('click', () => {
+      alert('📩 Личные сообщения будут доступны в ближайшее время!');
     });
   }
 }
